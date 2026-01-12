@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA MASTER - 2M MOTOS PRO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-orange: #ff4d00;
+            --neon-purple: #b300ff;
+            --neon-green: #00ff41;
+            --carbon: #121214;
+            --dark-bg: #050505;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Rajdhani', sans-serif;
+            background-image: 
+                linear-gradient(135deg, rgba(0, 243, 255, 0.03) 0%, rgba(255, 77, 0, 0.03) 100%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23050505" width="100" height="100"/><path fill="%23111111" d="M0 0h100v100H0z" opacity="0.05"/></svg>');
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .font-cyber { font-family: 'Orbitron', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        .glass-panel {
+            background: rgba(15, 15, 20, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(0, 243, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 243, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* BANNER HERO COM NOTÍCIAS */
+        .banner-hero {
+            height: 350px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 77, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: all 1.2s ease;
+            background-size: cover;
+            background-position: center;
+            transform: scale(1.1);
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .slide-overlay {
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.95) 20%, rgba(0, 0, 0, 0.7) 50%, transparent 100%);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 50px;
+        }
+
+        .slide-content {
+            max-width: 600px;
+        }
+
+        .slide-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .slide-badge.live { color: var(--neon-orange); }
+        .slide-badge.live span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--neon-orange);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        .slide-badge.news { color: var(--neon-blue); }
+
+        .slide-title {
+            font-size: 42px;
+            font-weight: 900;
+            color: white;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .slide-description {
+            color: #b0b0b0;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .card-moto {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(145deg, #1a1a1e, #0a0a0c);
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            clip-path: polygon(10% 0, 100% 0, 100% 85%, 90% 100%, 0 100%, 0 15%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-moto::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .card-moto:hover::before { left: 100%; }
+        .card-moto:hover {
+            transform: translateY(-8px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.3), inset 0 0 20px rgba(0, 243, 255, 0.05);
+        }
+
+        .btn-accelerate {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(255, 77, 0, 0.1));
+            border: 2px solid var(--neon-blue);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            color: var(--neon-blue);
+        }
+
+        .btn-accelerate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-blue);
+            transition: left 0.4s;
+            z-index: -1;
+        }
+
+        .btn-accelerate:hover::before { left: 0; }
+        .btn-accelerate:hover {
+            color: #000;
+            box-shadow: 0 0 30px var(--neon-blue), inset 0 0 20px rgba(0, 243, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 77, 0, 0.1);
+            border: 2px solid var(--neon-orange);
+            color: var(--neon-orange);
+            transition: all 0.4s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--neon-orange);
+            color: #000;
+            box-shadow: 0 0 30px var(--neon-orange);
+        }
+
+        .shimmer-text {
+            background: linear-gradient(90deg, #fff, var(--neon-blue), var(--neon-orange), #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 300% 100%;
+            animation: shimmer 4s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -300% 0; }
+            100% { background-position: 300% 0; }
+        }
+
+        @keyframes slide-in {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes speedometer-needle {
+            0%, 100% { transform: rotate(-45deg); }
+            50% { transform: rotate(45deg); }
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        @keyframes connection-pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(0, 255, 65, 0.5); }
+            50% { opacity: 0.7; box-shadow: 0 0 20px rgba(0, 255, 65, 0.8); }
+        }
+
+        .slide-in { animation: slide-in 0.6s ease-out; }
+        .fade-in-up { animation: fade-in-up 0.8s ease-out; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.4); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--neon-blue), var(--neon-orange)); border-radius: 10px; }
+
+        .level-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .level-admin {
+            background: rgba(255, 77, 0, 0.2);
+            color: var(--neon-orange);
+            border: 1px solid var(--neon-orange);
+        }
+
+        .level-operador {
+            background: rgba(0, 243, 255, 0.2);
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(255, 77, 0, 0.05));
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-orange));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            color: #fff;
+            border: 2px solid var(--neon-blue);
+        }
+
+        .speedometer-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto;
+        }
+
+        .speedometer-ring {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid rgba(0, 243, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3), 0 0 40px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.1);
+        }
+
+        .speedometer-inner {
+            position: absolute;
+            inset: 8px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 77, 0, 0.2);
+        }
+
+        .speedometer-inner-2 {
+            position: absolute;
+            inset: 16px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .speedometer-needle {
+            position: absolute;
+            width: 4px;
+            height: 50px;
+            background: linear-gradient(to top, var(--neon-orange), var(--neon-blue));
+            border-radius: 2px;
+            transform-origin: bottom center;
+            animation: speedometer-needle 2s ease-in-out infinite;
+        }
+
+        .speedometer-center {
+            position: relative;
+            z-index: 10;
+            background: var(--dark-bg);
+            border-radius: 50%;
+            padding: 12px;
+        }
+
+        .pulse-ring-1, .pulse-ring-2 {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 243, 255, 0.5);
+        }
+
+        .pulse-ring-1 { animation: pulse-ring 2s ease-out infinite; }
+        .pulse-ring-2 { animation: pulse-ring 2s ease-out infinite 0.5s; }
+
+        .connection-status {
+            animation: connection-pulse 2s infinite;
+        }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 768px) {
+            .slide-title { font-size: 28px; }
+            .slide-description { font-size: 14px; }
+            .slide-overlay { padding: 30px; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center">
+        <div class="max-w-md w-full">
+            <div class="text-center mb-12 slide-in">
+                <!-- Animated Speedometer Logo -->
+                <div class="speedometer-container mb-6">
+                    <div class="speedometer-ring">
+                        <div class="speedometer-inner"></div>
+                        <div class="speedometer-inner-2"></div>
+                        <div class="speedometer-needle"></div>
+                        <div class="speedometer-center">
+                            <i data-lucide="gauge" class="w-8 h-8 text-cyan-400"></i>
+                        </div>
+                    </div>
+                    <div class="pulse-ring-1"></div>
+                    <div class="pulse-ring-2"></div>
+                </div>
+                
+                <div class="flex items-center justify-center gap-2 mb-2">
+                    <i data-lucide="zap" class="w-5 h-5 text-orange-500 animate-pulse"></i>
+                    <h1 class="font-cyber text-3xl font-black shimmer-text">2M MOTOS PRO</h1>
+                    <i data-lucide="zap" class="w-5 h-5 text-orange-500 animate-pulse"></i>
+                </div>
+                <p class="text-cyan-400 font-mono text-xs tracking-[0.3em]">SISTEMA DE IGNIÇÃO</p>
+            </div>
+
+            <div class="glass-panel p-10 rounded-3xl border-r-4 border-orange-600 fade-in-up">
+                <div class="space-y-6">
+                    <div class="relative">
+                        <input type="text" id="user-login" placeholder="PILOTO" class="w-full bg-black/40 border-b-2 border-gray-800 p-4 text-white focus:border-cyan-400 outline-none font-cyber text-lg transition-colors">
+                        <div class="absolute right-4 top-4 text-cyan-500">
+                            <i data-lucide="user" class="w-5"></i>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <input type="password" id="user-pass" placeholder="CHAVE DE IGNIÇÃO" class="w-full bg-black/40 border-b-2 border-gray-800 p-4 text-white focus:border-cyan-400 outline-none font-cyber text-lg transition-colors">
+                        <div class="absolute right-4 top-4 text-orange-500">
+                            <i data-lucide="key" class="w-5"></i>
+                        </div>
+                    </div>
+
+                    <button onclick="handleLogin()" class="w-full btn-accelerate py-4 rounded-xl flex items-center justify-center gap-3 mt-8 font-cyber">
+                        <span>INICIAR SISTEMA</span>
+                        <i data-lucide="zap" class="w-5"></i>
+                    </button>
+
+                    <p class="text-center text-gray-500 text-xs font-mono mt-6">
+                        Teste: Consulte usuários no Baserow
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <p class="text-gray-600 font-mono text-xs tracking-widest">
+                    <span class="text-cyan-500">█</span> 2M MOTOS PRO <span class="text-orange-500">█</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="hidden max-w-7xl mx-auto">
+        <!-- Info Cards Row -->
+        <div id="info-cards" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 mb-8 fade-in-up">
+            <!-- Weather Card -->
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Clima</span>
+                    <i data-lucide="sun" class="w-6 h-6 text-yellow-500"></i>
+                </div>
+                <div class="flex items-baseline gap-1">
+                    <span class="stat-number text-2xl" id="weather-temp">28°</span>
+                </div>
+                <p class="text-xs text-gray-500 mt-1" id="weather-condition">Ensolarado</p>
+            </div>
+
+            <!-- Date Card -->
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Data</span>
+                    <i data-lucide="calendar" class="w-6 h-6 text-orange-500 opacity-50"></i>
+                </div>
+                <p class="text-sm font-bold text-white" id="current-day"></p>
+                <p class="stat-number text-xl" id="current-date-num"></p>
+                <p class="text-xs text-gray-500" id="current-month-year"></p>
+            </div>
+
+            <!-- Time Card -->
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Hora</span>
+                    <i data-lucide="clock" class="w-6 h-6 text-cyan-500 opacity-50 animate-pulse"></i>
+                </div>
+                <p class="stat-number text-2xl font-mono" id="current-time">00:00:00</p>
+                <p class="text-xs text-gray-500 mt-1">Horário Local</p>
+            </div>
+
+            <!-- Connection Time Card -->
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Conectado</span>
+                    <i data-lucide="timer" class="w-6 h-6 text-purple-500 opacity-50"></i>
+                </div>
+                <p class="stat-number text-2xl font-mono" id="connection-time">00:00:00</p>
+                <p class="text-xs text-gray-500 mt-1">Tempo de sessão</p>
+            </div>
+
+            <!-- City Card -->
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Localização</span>
+                    <i data-lucide="map-pin" class="w-6 h-6 text-orange-500 opacity-50"></i>
+                </div>
+                <p class="stat-number text-lg truncate" id="user-city">Carregando...</p>
+                <p class="text-xs text-gray-500 mt-1">Sua cidade</p>
+            </div>
+
+            <!-- Internet Speed Card -->
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Internet</span>
+                    <i data-lucide="wifi" class="w-6 h-6 text-green-500 opacity-50"></i>
+                </div>
+                <div class="flex items-baseline gap-1">
+                    <span class="stat-number text-xl" id="internet-speed">0</span>
+                    <span class="text-xs text-gray-500">Mbps</span>
+                </div>
+                <p class="text-xs text-gray-500 mt-1" id="internet-details">↓0 ↑0</p>
+            </div>
+
+            <!-- Baserow Connection Card -->
+            <div class="stat-card border-green-500/30">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Database</span>
+                    <i data-lucide="database" class="w-6 h-6 text-green-500"></i>
+                </div>
+                <p class="text-sm font-bold text-green-400">BASEROW</p>
+                <div class="flex items-center gap-2 mt-2">
+                    <div class="relative">
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full connection-status"></div>
+                    </div>
+                    <span class="level-badge bg-green-500/20 text-green-500 border-green-500 text-xs">ATIVA</span>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">API v1.0 • OK</p>
+            </div>
+        </div>
+
+        <!-- BANNER HERO COM NOTÍCIAS EM TEMPO REAL -->
+        <div class="banner-hero">
+            <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=2070')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge live">
+                            <span></span> MOTO NEWS LIVE
+                        </div>
+                        <h2 class="slide-title">DOMÍNIO DAS PISTAS: O FUTURO DA MOTOGP</h2>
+                        <p class="slide-description">Novas regras para 2026 prometem motores mais sustentáveis e maior aerodinâmica ativa.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=2070')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge news">LANÇAMENTO MUNDIAL</div>
+                        <h2 class="slide-title">DUCATI SUPERLEGGERA V4 J</h2>
+                        <p class="slide-description">A evolução do carbono: Menos peso, mais torque e tecnologia de ponta na palma da mão.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1552820728-8ac41f1ce891?q=80&w=2070')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge live">
+                            <span></span> TECNOLOGIA
+                        </div>
+                        <h2 class="slide-title">REVOLUÇÃO ELÉTRICA NAS MOTOS</h2>
+                        <p class="slide-description">Fabricantes investem bilhões em motocicletas elétricas com autonomia revolucionária.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1609630875171-b1321377ee65?q=80&w=2070')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge news">CAMPEONATO</div>
+                        <h2 class="slide-title">SUPERBIKE MUNDIAL 2026</h2>
+                        <p class="slide-description">Pilotos de elite competem pela supremacia em velocidade e precisão nas pistas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="glass-panel p-6 rounded-3xl border-l-4 border-cyan-500 mb-10 slide-in">
+            <div class="space-y-4">
+                <!-- Linha 1: Logo e informações do usuário -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div class="flex items-center gap-4">
+                        <img src="https://i.ibb.co/DD98rjsH/logo1.png" alt="Logo" class="w-16 drop-shadow-[0_0_10px_rgba(0,243,255,0.3)]">
+                        <div>
+                            <h2 class="font-cyber text-2xl text-white font-black">PAINEL ADMINISTRATIVO</h2>
+                            <p id="live-clock" class="text-xs text-orange-500 font-mono tracking-widest mt-1"></p>
+                            <p id="user-info" class="text-xs text-cyan-400 font-mono mt-1"></p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 flex-wrap md:flex-nowrap" id="action-buttons">
+                        <button id="btn-add-system" onclick="openModal('add')" class="hidden p-3 bg-cyan-900/20 text-cyan-400 border border-cyan-800 rounded-xl hover:bg-cyan-500 hover:text-black transition-all font-cyber font-bold" title="Novo Sistema">
+                            <i data-lucide="plus-circle" class="w-5"></i>
+                        </button>
+                        <button id="btn-add-user" onclick="openUserModal()" class="hidden p-3 bg-orange-900/20 text-orange-400 border border-orange-800 rounded-xl hover:bg-orange-500 hover:text-black transition-all font-cyber font-bold" title="Novo Piloto">
+                            <i data-lucide="user-plus" class="w-5"></i>
+                        </button>
+                        <button onclick="handleLogout()" class="p-3 bg-red-900/20 text-red-500 border border-red-800 rounded-xl hover:bg-red-600 hover:text-white transition-all font-cyber font-bold">
+                            <i data-lucide="log-out" class="w-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Cards (SOMENTE PARA ADMINISTRADORES) -->
+        <div id="stats-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 fade-in-up hidden">
+            <div class="stat-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-xs font-cyber uppercase tracking-widest">Pilotos</p>
+                        <p class="stat-number mt-2" id="stat-pilots">0</p>
+                    </div>
+                    <i data-lucide="users" class="w-12 h-12 text-cyan-500 opacity-30"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-xs font-cyber uppercase tracking-widest">Sistemas</p>
+                        <p class="stat-number mt-2" id="stat-systems">0</p>
+                    </div>
+                    <i data-lucide="cpu" class="w-12 h-12 text-orange-500 opacity-30"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-xs font-cyber uppercase tracking-widest">Admins</p>
+                        <p class="stat-number mt-2" id="stat-admins">0</p>
+                    </div>
+                    <i data-lucide="shield" class="w-12 h-12 text-purple-500 opacity-30"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-xs font-cyber uppercase tracking-widest">Status</p>
+                        <p class="stat-number mt-2 text-green-400">ONLINE</p>
+                    </div>
+                    <i data-lucide="activity" class="w-12 h-12 text-green-500 opacity-30"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Systems Grid -->
+            <div class="lg:col-span-2 fade-in-up">
+                <h3 class="font-cyber text-cyan-400 mb-6 flex items-center gap-2 text-lg font-black">
+                    <i data-lucide="layout-grid"></i> SISTEMAS ATIVOS
+                </h3>
+                <div id="systems-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
+            </div>
+
+            <!-- Users List (Admin Only) -->
+            <div id="users-panel" class="glass-panel p-6 rounded-3xl border-t-4 border-orange-500 h-fit fade-in-up hidden">
+                <h3 class="font-cyber text-orange-400 mb-6 flex items-center gap-2 text-lg font-black">
+                    <i data-lucide="shield-check"></i> PILOTOS CADASTRADOS
+                </h3>
+                <div id="users-list" class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SISTEMA -->
+    <div id="modal-sistema" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-50 p-4">
+        <div class="glass-panel w-full max-w-lg p-10 rounded-[2rem] border-t-8 border-cyan-500 fade-in-up">
+            <h2 id="modal-title" class="font-cyber text-2xl text-white mb-6 uppercase font-black">Configurar Máquina</h2>
+            <div class="space-y-4">
+                <input type="hidden" id="edit-id">
+                <input type="text" id="sys-name" placeholder="NOME DO SISTEMA" class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-cyan-400 focus:bg-white/10 transition-all">
+                <input type="text" id="sys-logo" placeholder="URL DO LOGO" class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-cyan-400 focus:bg-white/10 transition-all">
+                <input type="text" id="sys-link" placeholder="URL DE ACESSO" class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-cyan-400 focus:bg-white/10 transition-all">
+                <div class="flex gap-4 pt-6">
+                    <button onclick="saveSistema()" class="flex-1 btn-accelerate py-4 rounded-xl font-cyber">GRAVAR</button>
+                    <button onclick="closeModal()" class="flex-1 bg-gray-800 py-4 rounded-xl font-cyber font-bold hover:bg-gray-700 transition-all">CANCELAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL USUARIO -->
+    <div id="modal-usuario" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-50 p-4">
+        <div class="glass-panel w-full max-w-lg p-10 rounded-[2rem] border-t-8 border-orange-500 fade-in-up">
+            <h2 id="user-modal-title" class="font-cyber text-2xl text-white mb-6 uppercase font-black">NOVO PILOTO</h2>
+            <div class="space-y-4">
+                <input type="hidden" id="u-edit-id">
+                <input type="text" id="u-name" placeholder="NOME COMPLETO" class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
+                <input type="text" id="u-login" placeholder="LOGIN" class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
+                <input type="password" id="u-pass" placeholder="SENHA" class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
+                <select id="u-level" class="w-full bg-black/40 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-orange-500 focus:bg-black/60 transition-all appearance-none font-cyber">
+                    <option value="" disabled selected>NÍVEL DE ACESSO</option>
+                    <option value="administrador">ADMINISTRADOR</option>
+                    <option value="operador">OPERADOR</option>
+                </select>
+                <div class="flex gap-4 pt-6">
+                    <button onclick="saveUser()" class="flex-1 btn-secondary py-4 rounded-xl font-cyber font-bold">AUTORIZAR</button>
+                    <button onclick="closeUserModal()" class="flex-1 bg-gray-800 py-4 rounded-xl font-cyber font-bold hover:bg-gray-700 transition-all">CANCELAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== CONFIGURAÇÕES BASEROW =====
+        const BASEROW_TOKEN = 'qKIgfLN57iiG7V25oEFAfFkNe95DyhQ1';
+        const TABLE_EMPRESA = '798835';
+        const TABLE_USUARIOS = '798839';
+        const API_BASE = 'https://api.baserow.io/api/database/rows/table/';
+
+        // ===== ESTADO GLOBAL =====
+        let systems = [];
+        let users = [];
+        let currentUser = null;
+        let currentSlide = 0;
+        let loginTime = null;
+
+        // ===== FUNÇÃO PARA OBTER NÍVEL DE ACESSO =====
+        function getAcesso(user) {
+            // Suporta diferentes nomes de coluna para compatibilidade
+            return user.acesso || user.Nivel_acesso || user.Nivel_accesso || "operador";
+        }
+
+        // ===== INICIALIZAÇÃO =====
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initializeClock();
+            initializeBanner();
+            initializeInfoCards();
+            loadStoredUser();
+        });
+
+        // ===== INFO CARDS =====
+        function initializeInfoCards() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            setInterval(updateConnectionTime, 1000);
+            getLocation();
+            simulateInternetSpeed();
+            setInterval(simulateInternetSpeed, 30000);
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+            
+            document.getElementById('current-time').innerText = now.toLocaleTimeString('pt-BR');
+            document.getElementById('current-day').innerText = days[now.getDay()];
+            document.getElementById('current-date-num').innerText = now.getDate();
+            document.getElementById('current-month-year').innerText = `${months[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
+        function updateConnectionTime() {
+            if (!loginTime) return;
+            const now = new Date();
+            const diff = now - loginTime;
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('connection-time').innerText = 
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        try {
+                            const { latitude, longitude } = position.coords;
+                            const response = await fetch(
+                                `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+                            );
+                            const data = await response.json();
+                            const city = data.address?.city || data.address?.town || data.address?.village || 'Brasil';
+                            document.getElementById('user-city').innerText = city;
+                        } catch {
+                            document.getElementById('user-city').innerText = 'Brasil';
+                        }
+                    },
+                    () => {
+                        document.getElementById('user-city').innerText = 'Brasil';
+                    }
+                );
+            }
+        }
+
+        function simulateInternetSpeed() {
+            const download = Math.floor(Math.random() * 100) + 50;
+            const upload = Math.floor(Math.random() * 50) + 20;
+            document.getElementById('internet-speed').innerText = download;
+            document.getElementById('internet-details').innerText = `↓${download} ↑${upload}`;
+        }
+
+        // ===== BANNER ROTATIVO =====
+        function initializeBanner() {
+            setInterval(() => {
+                const slides = document.querySelectorAll('.slide');
+                slides.forEach(slide => slide.classList.remove('active'));
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }, 6000);
+        }
+
+        // ===== RELÓGIO EM TEMPO REAL =====
+        function initializeClock() {
+            function updateClock() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                document.getElementById('live-clock').innerText = `${hours}:${minutes}:${seconds}`;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        // ===== AUTENTICAÇÃO =====
+        async function handleLogin() {
+            const login = document.getElementById('user-login').value.trim();
+            const pass = document.getElementById('user-pass').value.trim();
+
+            if (!login || !pass) {
+                Swal.fire('Aviso', 'Preencha todos os campos', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}${TABLE_USUARIOS}/?user_field_names=true`, {
+                    headers: { 'Authorization': `Token ${BASEROW_TOKEN}` }
+                });
+                const data = await response.json();
+                const user = data.results.find(u => u.Login === login && u.Senha === pass);
+
+                if (user) {
+                    currentUser = user;
+                    loginTime = new Date();
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    localStorage.setItem('loginTime', loginTime.toISOString());
+                    showDashboard();
+                    Swal.fire('Sucesso', 'Sistema iniciado com sucesso!', 'success');
+                } else {
+                    Swal.fire('Erro', 'Credenciais Inválidas', 'error');
+                }
+            } catch (err) {
+                Swal.fire('Erro', 'Falha na conexão', 'error');
+                console.error(err);
+            }
+        }
+
+        function handleLogout() {
+            Swal.fire({
+                title: 'Desconectar?',
+                text: 'Você será desconectado do sistema',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, desconectar',
+                cancelButtonText: 'Cancelar'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('currentUser');
+                    localStorage.removeItem('loginTime');
+                    location.reload();
+                }
+            });
+        }
+
+        function loadStoredUser() {
+            const stored = localStorage.getItem('currentUser');
+            const storedLoginTime = localStorage.getItem('loginTime');
+            if (stored) {
+                currentUser = JSON.parse(stored);
+                loginTime = storedLoginTime ? new Date(storedLoginTime) : new Date();
+                showDashboard();
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            updateUserInfo();
+            applyAccessControl();
+            loadData();
+            lucide.createIcons();
+        }
+
+        function updateUserInfo() {
+            if (currentUser) {
+                const nivel = getAcesso(currentUser);
+                const levelText = nivel === 'administrador' ? 'ADMINISTRADOR' : 'OPERADOR';
+                document.getElementById('user-info').innerText = `${currentUser.Name_user} • ${levelText}`;
+            }
+        }
+
+        // ===== CONTROLE DE ACESSO RIGOROSO =====
+        function applyAccessControl() {
+            const nivel = getAcesso(currentUser);
+            const isAdmin = nivel === 'administrador';
+            
+            // Controle de botões
+            document.getElementById('btn-add-system').classList.toggle('hidden', !isAdmin);
+            document.getElementById('btn-add-user').classList.toggle('hidden', !isAdmin);
+            document.getElementById('users-panel').classList.toggle('hidden', !isAdmin);
+            
+            // 🔧 CORREÇÃO: Mostrar/ocultar cards de estatísticas apenas para administradores
+            document.getElementById('stats-cards-container').classList.toggle('hidden', !isAdmin);
+            
+            // Ajustar layout para operadores
+            const systemsGrid = document.querySelector('.lg\\:col-span-2');
+            if (systemsGrid) {
+                if (!isAdmin) {
+                    // Operador: ocupa todo o espaço com sistemas
+                    systemsGrid.classList.remove('lg:col-span-2');
+                    systemsGrid.classList.add('lg:col-span-3');
+                } else {
+                    // Administrador: mostra painel de usuários também
+                    systemsGrid.classList.remove('lg:col-span-3');
+                    systemsGrid.classList.add('lg:col-span-2');
+                }
+            }
+        }
+
+        // ===== CARREGAMENTO DE DADOS =====
+        async function loadData() {
+            await loadSystems();
+            await loadUsers();
+            updateStats();
+        }
+
+        async function loadSystems() {
+            try {
+                const res = await fetch(`${API_BASE}${TABLE_EMPRESA}/?user_field_names=true`, {
+                    headers: { 'Authorization': `Token ${BASEROW_TOKEN}` }
+                });
+                const data = await res.json();
+                systems = data.results || [];
+                renderSystems();
+            } catch (err) {
+                console.error('Erro ao carregar sistemas:', err);
+                Swal.fire('Erro', 'Falha ao carregar sistemas', 'error');
+            }
+        }
+
+        async function loadUsers() {
+            try {
+                const res = await fetch(`${API_BASE}${TABLE_USUARIOS}/?user_field_names=true`, {
+                    headers: { 'Authorization': `Token ${BASEROW_TOKEN}` }
+                });
+                const data = await res.json();
+                users = data.results || [];
+                renderUsers();
+            } catch (err) {
+                console.error('Erro ao carregar usuários:', err);
+            }
+        }
+
+        function updateStats() {
+            const nivel = getAcesso(currentUser);
+            const isAdmin = nivel === 'administrador';
+            
+            // Só atualiza stats se for admin
+            if (isAdmin) {
+                const admins = users.filter(u => getAcesso(u) === 'administrador').length;
+                document.getElementById('stat-pilots').innerText = users.length;
+                document.getElementById('stat-systems').innerText = systems.length;
+                document.getElementById('stat-admins').innerText = admins;
+            }
+        }
+
+        // ===== RENDERIZAÇÃO DE SISTEMAS =====
+        function renderSystems() {
+            const grid = document.getElementById('systems-grid');
+            grid.innerHTML = '';
+
+            if (systems.length === 0) {
+                grid.innerHTML = '<p class="text-gray-500 col-span-2 text-center py-8">Nenhum sistema cadastrado</p>';
+                return;
+            }
+
+            const nivel = getAcesso(currentUser);
+            const isAdmin = nivel === 'administrador';
+
+            systems.forEach((sys, index) => {
+                grid.innerHTML += `
+                    <div class="card-moto p-6 relative group" style="animation-delay: ${index * 0.1}s;">
+                        <div class="flex justify-between items-start mb-4">
+                            <img src="${sys.Url_logo}" class="w-12 h-12 object-contain bg-black p-1 rounded-lg" onerror="this.src='https://i.ibb.co/DD98rjsH/logo1.png'">
+                            ${isAdmin ? `
+                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button onclick="editSystem(${sys.id})" class="text-cyan-500 hover:text-white transition-colors" title="Editar">
+                                        <i data-lucide="edit-3" class="w-4"></i>
+                                    </button>
+                                    <button onclick="deleteSystem(${sys.id})" class="text-red-500 hover:text-white transition-colors" title="Deletar">
+                                        <i data-lucide="trash-2" class="w-4"></i>
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <h4 class="font-cyber text-white truncate font-bold">${sys.Name}</h4>
+                        <p class="text-gray-500 text-xs mt-2 font-mono">ID: ${sys.id}</p>
+                        <a href="${sys.Link_empresa}" target="_blank" class="block mt-4 text-center py-2 bg-cyan-500/10 border border-cyan-500/50 rounded-lg text-xs font-cyber text-cyan-400 hover:bg-cyan-500 hover:text-black transition-all">
+                            ACESSAR
+                        </a>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        // ===== RENDERIZAÇÃO DE USUÁRIOS =====
+        function renderUsers() {
+            const list = document.getElementById('users-list');
+            list.innerHTML = '';
+
+            const nivel = getAcesso(currentUser);
+            const isAdmin = nivel === 'administrador';
+            
+            // Só renderiza usuários se for admin
+            if (!isAdmin) return;
+
+            if (users.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-8 text-sm">Nenhum piloto cadastrado</p>';
+                return;
+            }
+
+            users.forEach((u, index) => {
+                const nivelUser = getAcesso(u);
+                const levelBadgeClass = nivelUser === 'administrador' ? 'level-admin' : 'level-operador';
+                const levelText = nivelUser === 'administrador' ? 'ADMIN' : 'OPERADOR';
+
+                list.innerHTML += `
+                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-orange-500/30 transition-all group" style="animation-delay: ${index * 0.05}s;">
+                        <div class="flex items-center gap-3 flex-1">
+                            <div class="user-avatar">${u.Name_user.charAt(0).toUpperCase()}</div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-bold text-white truncate">${u.Name_user}</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="level-badge ${levelBadgeClass}">${levelText}</span>
+                                    <span class="text-[9px] text-gray-500 font-mono truncate">${u.Login}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="editUser(${u.id})" class="text-gray-400 hover:text-orange-500 transition-colors" title="Editar">
+                                <i data-lucide="pencil" class="w-4"></i>
+                            </button>
+                            <button onclick="deleteUser(${u.id})" class="text-gray-600 hover:text-red-500 transition-colors" title="Deletar">
+                                <i data-lucide="user-x" class="w-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        // ===== CRUD SISTEMAS =====
+        function openModal(mode) {
+            if (mode === 'add') {
+                document.getElementById('modal-title').innerText = "NOVA MÁQUINA";
+                document.getElementById('edit-id').value = '';
+                document.getElementById('sys-name').value = '';
+                document.getElementById('sys-logo').value = '';
+                document.getElementById('sys-link').value = '';
+            }
+            document.getElementById('modal-sistema').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-sistema').classList.add('hidden');
+        }
+
+        async function saveSistema() {
+            const id = document.getElementById('edit-id').value;
+            const name = document.getElementById('sys-name').value.trim();
+            const logo = document.getElementById('sys-logo').value.trim();
+            const link = document.getElementById('sys-link').value.trim();
+
+            if (!name || !logo || !link) {
+                Swal.fire('Aviso', 'Preencha todos os campos', 'warning');
+                return;
+            }
+
+            const payload = { "Name": name, "Url_logo": logo, "Link_empresa": link };
+            const method = id ? 'PATCH' : 'POST';
+            const url = id ? `${API_BASE}${TABLE_EMPRESA}/${id}/?user_field_names=true` : `${API_BASE}${TABLE_EMPRESA}/?user_field_names=true`;
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Authorization': `Token ${BASEROW_TOKEN}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    Swal.fire('Sucesso', id ? 'Sistema atualizado' : 'Sistema criado', 'success');
+                    closeModal();
+                    loadSystems();
+                    updateStats();
+                } else {
+                    Swal.fire('Erro', 'Falha ao salvar sistema', 'error');
+                }
+            } catch (err) {
+                Swal.fire('Erro', 'Erro na conexão', 'error');
+                console.error(err);
+            }
+        }
+
+        async function deleteSystem(id) {
+            Swal.fire({
+                title: 'Deletar Sistema?',
+                text: 'Esta ação não pode ser desfeita',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, deletar',
+                cancelButtonText: 'Cancelar'
+            }).then(async result => {
+                if (result.isConfirmed) {
+                    try {
+                        await fetch(`${API_BASE}${TABLE_EMPRESA}/${id}/`, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': `Token ${BASEROW_TOKEN}` }
+                        });
+                        Swal.fire('Deletado', 'Sistema removido com sucesso', 'success');
+                        loadSystems();
+                        updateStats();
+                    } catch (err) {
+                        Swal.fire('Erro', 'Falha ao deletar', 'error');
+                    }
+                }
+            });
+        }
+
+        function editSystem(id) {
+            const sys = systems.find(s => s.id === id);
+            if (sys) {
+                document.getElementById('modal-title').innerText = "EDITAR MÁQUINA";
+                document.getElementById('edit-id').value = sys.id;
+                document.getElementById('sys-name').value = sys.Name;
+                document.getElementById('sys-logo').value = sys.Url_logo;
+                document.getElementById('sys-link').value = sys.Link_empresa;
+                document.getElementById('modal-sistema').classList.remove('hidden');
+            }
+        }
+
+        // ===== CRUD USUÁRIOS =====
+        function openUserModal() {
+            document.getElementById('user-modal-title').innerText = "NOVO PILOTO";
+            document.getElementById('u-edit-id').value = '';
+            document.getElementById('u-name').value = '';
+            document.getElementById('u-login').value = '';
+            document.getElementById('u-pass').value = '';
+            document.getElementById('u-level').value = '';
+            document.getElementById('modal-usuario').classList.remove('hidden');
+        }
+
+        function closeUserModal() {
+            document.getElementById('modal-usuario').classList.add('hidden');
+        }
+
+        async function saveUser() {
+            const id = document.getElementById('u-edit-id').value;
+            const name = document.getElementById('u-name').value.trim();
+            const login = document.getElementById('u-login').value.trim();
+            const pass = document.getElementById('u-pass').value.trim();
+            const level = document.getElementById('u-level').value;
+
+            if (!name || !login || !pass || !level) {
+                Swal.fire('Aviso', 'Preencha todos os campos', 'warning');
+                return;
+            }
+
+            // 🔧 CORREÇÃO: Usar "acesso" como nome da coluna
+            const payload = { 
+                "Name_user": name, 
+                "Login": login, 
+                "Senha": pass, 
+                "acesso": level  // Nome correto da coluna no Baserow
+            };
+            
+            const method = id ? 'PATCH' : 'POST';
+            const url = id ? `${API_BASE}${TABLE_USUARIOS}/${id}/?user_field_names=true` : `${API_BASE}${TABLE_USUARIOS}/?user_field_names=true`;
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Authorization': `Token ${BASEROW_TOKEN}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    Swal.fire('Sucesso', id ? 'Piloto atualizado' : 'Piloto cadastrado', 'success');
+                    closeUserModal();
+                    loadUsers();
+                    updateStats();
+                } else {
+                    Swal.fire('Erro', 'Falha ao salvar piloto', 'error');
+                }
+            } catch (err) {
+                Swal.fire('Erro', 'Erro na conexão', 'error');
+            }
+        }
+
+        async function deleteUser(id) {
+            Swal.fire({
+                title: 'Deletar Piloto?',
+                text: 'Esta ação não pode ser desfeita',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, deletar',
+                cancelButtonText: 'Cancelar'
+            }).then(async result => {
+                if (result.isConfirmed) {
+                    try {
+                        await fetch(`${API_BASE}${TABLE_USUARIOS}/${id}/`, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': `Token ${BASEROW_TOKEN}` }
+                        });
+                        Swal.fire('Deletado', 'Piloto removido com sucesso', 'success');
+                        loadUsers();
+                        updateStats();
+                    } catch (err) {
+                        Swal.fire('Erro', 'Falha ao deletar', 'error');
+                    }
+                }
+            });
+        }
+
+        function editUser(id) {
+            const u = users.find(user => user.id === id);
+            if (u) {
+                document.getElementById('user-modal-title').innerText = "EDITAR PILOTO";
+                document.getElementById('u-edit-id').value = u.id;
+                document.getElementById('u-name').value = u.Name_user;
+                document.getElementById('u-login').value = u.Login;
+                document.getElementById('u-pass').value = u.Senha;
+                // 🔧 CORREÇÃO: Usar "acesso" como nome da coluna
+                document.getElementById('u-level').value = u.acesso || u.Nivel_acesso || u.Nivel_accesso || "";
+                document.getElementById('modal-usuario').classList.remove('hidden');
+            }
+        }
+
+        // ===== FECHAR MODAIS AO CLICAR FORA =====
+        document.addEventListener('click', (e) => {
+            const modalSistema = document.getElementById('modal-sistema');
+            const modalUsuario = document.getElementById('modal-usuario');
+
+            if (e.target === modalSistema) modalSistema.classList.add('hidden');
+            if (e.target === modalUsuario) modalUsuario.classList.add('hidden');
+        });
+
+        // ===== TECLA ESC PARA FECHAR MODAIS =====
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('modal-sistema').classList.add('hidden');
+                document.getElementById('modal-usuario').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
