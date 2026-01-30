@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,15 +8,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --neon-blue: #00f3ff;
             --neon-orange: #ff4d00;
             --neon-purple: #b300ff;
             --neon-green: #00ff41;
+            --neon-pink: #ff4d6d;
             --carbon: #121214;
             --dark-bg: #050505;
+        }
+
+        :root[data-theme="light"] {
+            --neon-blue: #0066cc;
+            --neon-orange: #cc5500;
+            --neon-purple: #8000cc;
+            --neon-green: #009933;
+            --neon-pink: #cc3366;
+            --carbon: #f0f2f5;
+            --dark-bg: #ffffff;
         }
 
         * {
@@ -26,29 +41,82 @@
 
         body {
             background-color: var(--dark-bg);
-            color: #e0e0e0;
+            color: var(--text-color);
             font-family: 'Rajdhani', sans-serif;
-            background-image: 
+            background-image:
                 linear-gradient(135deg, rgba(0, 243, 255, 0.03) 0%, rgba(255, 77, 0, 0.03) 100%),
                 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23050505" width="100" height="100"/><path fill="%23111111" d="M0 0h100v100H0z" opacity="0.05"/></svg>');
             min-height: 100vh;
             overflow-x: hidden;
-        }
-
-        .font-cyber { font-family: 'Orbitron', sans-serif; }
-        .font-mono { font-family: 'Space Mono', monospace; }
-
-        .glass-panel {
-            background: rgba(15, 15, 20, 0.85);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 243, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
             transition: all 0.3s ease;
         }
 
+        [data-theme="light"] body {
+            background-image:
+                linear-gradient(135deg, rgba(0, 102, 204, 0.03) 0%, rgba(204, 85, 0, 0.03) 100%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23ffffff" width="100" height="100"/><path fill="%23e0e0e0" d="M0 0h100v100H0z" opacity="0.05"/></svg>');
+        }
+
+        .font-cyber {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'Space Mono', monospace;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px var(--glass-shadow), inset 0 1px 0 var(--glass-inset);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 102, 204, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
         .glass-panel:hover {
-            border-color: rgba(0, 243, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 243, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-color: var(--glass-border-hover);
+            box-shadow: 0 8px 32px var(--glass-shadow-hover), inset 0 1px 0 var(--glass-inset-hover);
+        }
+
+        [data-theme="light"] .glass-panel:hover {
+            border-color: rgba(0, 102, 204, 0.3);
+        }
+
+        /* CSS Variables para tema */
+        :root {
+            --text-color: #e0e0e0;
+            --glass-bg: rgba(15, 15, 20, 0.85);
+            --glass-border: rgba(0, 243, 255, 0.1);
+            --glass-shadow: rgba(0, 0, 0, 0.6);
+            --glass-inset: rgba(255, 255, 255, 0.05);
+            --glass-border-hover: rgba(0, 243, 255, 0.2);
+            --glass-shadow-hover: rgba(0, 243, 255, 0.1);
+            --glass-inset-hover: rgba(255, 255, 255, 0.1);
+            --card-bg-dark: #1a1a1e;
+            --card-bg-light: #0a0a0c;
+            --stat-card-bg: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(255, 77, 0, 0.05));
+            --stat-card-border: rgba(0, 243, 255, 0.2);
+        }
+
+        [data-theme="light"] {
+            --text-color: #333333;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 102, 204, 0.1);
+            --glass-shadow: rgba(0, 0, 0, 0.1);
+            --glass-inset: rgba(255, 255, 255, 0.9);
+            --glass-border-hover: rgba(0, 102, 204, 0.3);
+            --glass-shadow-hover: rgba(0, 102, 204, 0.1);
+            --glass-inset-hover: rgba(255, 255, 255, 0.95);
+            --card-bg-dark: #f8f9fa;
+            --card-bg-light: #e9ecef;
+            --stat-card-bg: linear-gradient(135deg, rgba(0, 102, 204, 0.1), rgba(204, 85, 0, 0.05));
+            --stat-card-border: rgba(0, 102, 204, 0.2);
         }
 
         /* BANNER HERO COM NOTÍCIAS */
@@ -57,8 +125,16 @@
             position: relative;
             overflow: hidden;
             border-radius: 24px;
-            border: 1px solid rgba(255, 77, 0, 0.3);
+            border: 1px solid var(--banner-border);
             margin-bottom: 30px;
+        }
+
+        :root {
+            --banner-border: rgba(255, 77, 0, 0.3);
+        }
+
+        [data-theme="light"] {
+            --banner-border: rgba(204, 85, 0, 0.3);
         }
 
         .slide {
@@ -84,6 +160,10 @@
             padding: 50px;
         }
 
+        [data-theme="light"] .slide-overlay {
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.95) 20%, rgba(255, 255, 255, 0.7) 50%, transparent 100%);
+        }
+
         .slide-content {
             max-width: 600px;
         }
@@ -99,7 +179,10 @@
             text-transform: uppercase;
         }
 
-        .slide-badge.live { color: var(--neon-orange); }
+        .slide-badge.live {
+            color: var(--neon-orange);
+        }
+
         .slide-badge.live span {
             display: inline-block;
             width: 8px;
@@ -108,36 +191,64 @@
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
-        .slide-badge.news { color: var(--neon-blue); }
+
+        .slide-badge.news {
+            color: var(--neon-blue);
+        }
 
         .slide-title {
             font-size: 42px;
             font-weight: 900;
-            color: white;
+            color: var(--slide-title);
             line-height: 1.2;
             margin-bottom: 16px;
             font-family: 'Orbitron', sans-serif;
             letter-spacing: 1px;
         }
 
+        :root {
+            --slide-title: white;
+            --slide-description: #b0b0b0;
+        }
+
+        [data-theme="light"] {
+            --slide-title: #222222;
+            --slide-description: #666666;
+        }
+
         .slide-description {
-            color: #b0b0b0;
+            color: var(--slide-description);
             font-size: 16px;
             line-height: 1.6;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
         }
 
         .card-moto {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            background: linear-gradient(145deg, #1a1a1e, #0a0a0c);
-            border: 1px solid rgba(0, 243, 255, 0.1);
+            background: linear-gradient(145deg, var(--card-bg-dark), var(--card-bg-light));
+            border: 1px solid var(--card-border);
             clip-path: polygon(10% 0, 100% 0, 100% 85%, 90% 100%, 0 100%, 0 15%);
             position: relative;
             overflow: hidden;
+        }
+
+        :root {
+            --card-border: rgba(0, 243, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --card-border: rgba(0, 102, 204, 0.1);
         }
 
         .card-moto::before {
@@ -147,19 +258,40 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, var(--card-shine), transparent);
             transition: left 0.5s;
         }
 
-        .card-moto:hover::before { left: 100%; }
+        :root {
+            --card-shine: rgba(0, 243, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --card-shine: rgba(0, 102, 204, 0.1);
+        }
+
+        .card-moto:hover::before {
+            left: 100%;
+        }
+
         .card-moto:hover {
             transform: translateY(-8px);
             border-color: var(--neon-blue);
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.3), inset 0 0 20px rgba(0, 243, 255, 0.05);
+            box-shadow: 0 0 30px var(--card-hover-glow), inset 0 0 20px var(--card-hover-inset);
+        }
+
+        :root {
+            --card-hover-glow: rgba(0, 243, 255, 0.3);
+            --card-hover-inset: rgba(0, 243, 255, 0.05);
+        }
+
+        [data-theme="light"] {
+            --card-hover-glow: rgba(0, 102, 204, 0.3);
+            --card-hover-inset: rgba(0, 102, 204, 0.05);
         }
 
         .btn-accelerate {
-            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(255, 77, 0, 0.1));
+            background: linear-gradient(135deg, var(--btn-acc-bg1), var(--btn-acc-bg2));
             border: 2px solid var(--neon-blue);
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
@@ -168,6 +300,16 @@
             letter-spacing: 2px;
             font-weight: 700;
             color: var(--neon-blue);
+        }
+
+        :root {
+            --btn-acc-bg1: rgba(0, 243, 255, 0.1);
+            --btn-acc-bg2: rgba(255, 77, 0, 0.1);
+        }
+
+        [data-theme="light"] {
+            --btn-acc-bg1: rgba(0, 102, 204, 0.1);
+            --btn-acc-bg2: rgba(204, 85, 0, 0.1);
         }
 
         .btn-accelerate::before {
@@ -182,28 +324,95 @@
             z-index: -1;
         }
 
-        .btn-accelerate:hover::before { left: 0; }
+        .btn-accelerate:hover::before {
+            left: 0;
+        }
+
         .btn-accelerate:hover {
-            color: #000;
-            box-shadow: 0 0 30px var(--neon-blue), inset 0 0 20px rgba(0, 243, 255, 0.2);
+            color: var(--btn-acc-hover-text);
+            box-shadow: 0 0 30px var(--neon-blue), inset 0 0 20px var(--btn-acc-hover-inset);
             transform: translateY(-2px);
         }
 
+        :root {
+            --btn-acc-hover-text: #000;
+            --btn-acc-hover-inset: rgba(0, 243, 255, 0.2);
+        }
+
+        [data-theme="light"] {
+            --btn-acc-hover-text: #fff;
+            --btn-acc-hover-inset: rgba(0, 102, 204, 0.2);
+        }
+
         .btn-secondary {
-            background: rgba(255, 77, 0, 0.1);
+            background: var(--btn-sec-bg);
             border: 2px solid var(--neon-orange);
             color: var(--neon-orange);
             transition: all 0.4s;
         }
 
+        :root {
+            --btn-sec-bg: rgba(255, 77, 0, 0.1);
+        }
+
+        [data-theme="light"] {
+            --btn-sec-bg: rgba(204, 85, 0, 0.1);
+        }
+
         .btn-secondary:hover {
             background: var(--neon-orange);
-            color: #000;
+            color: var(--btn-sec-hover-text);
             box-shadow: 0 0 30px var(--neon-orange);
         }
 
+        :root {
+            --btn-sec-hover-text: #000;
+        }
+
+        [data-theme="light"] {
+            --btn-sec-hover-text: #fff;
+        }
+
+        .btn-theme-toggle {
+            background: var(--theme-toggle-bg);
+            border: 2px solid var(--theme-toggle-border);
+            color: var(--theme-toggle-color);
+            transition: all 0.4s;
+        }
+
+        :root {
+            --theme-toggle-bg: rgba(255, 255, 255, 0.1);
+            --theme-toggle-border: rgba(255, 255, 255, 0.2);
+            --theme-toggle-color: #fff;
+        }
+
+        [data-theme="light"] {
+            --theme-toggle-bg: rgba(0, 0, 0, 0.1);
+            --theme-toggle-border: rgba(0, 0, 0, 0.2);
+            --theme-toggle-color: #333;
+        }
+
+        .btn-theme-toggle:hover {
+            background: var(--theme-toggle-hover-bg);
+            border-color: var(--theme-toggle-hover-border);
+            color: var(--theme-toggle-hover-color);
+            transform: rotate(180deg);
+        }
+
+        :root {
+            --theme-toggle-hover-bg: rgba(255, 255, 255, 0.2);
+            --theme-toggle-hover-border: #fff;
+            --theme-toggle-hover-color: #fff;
+        }
+
+        [data-theme="light"] {
+            --theme-toggle-hover-bg: rgba(0, 0, 0, 0.2);
+            --theme-toggle-hover-border: #000;
+            --theme-toggle-hover-color: #000;
+        }
+
         .shimmer-text {
-            background: linear-gradient(90deg, #fff, var(--neon-blue), var(--neon-orange), #fff);
+            background: linear-gradient(90deg, var(--shimmer1), var(--shimmer2), var(--shimmer3), var(--shimmer4));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -211,42 +420,225 @@
             animation: shimmer 4s infinite;
         }
 
+        :root {
+            --shimmer1: #fff;
+            --shimmer2: var(--neon-blue);
+            --shimmer3: var(--neon-orange);
+            --shimmer4: #fff;
+        }
+
+        [data-theme="light"] {
+            --shimmer1: #333;
+            --shimmer2: var(--neon-blue);
+            --shimmer3: var(--neon-orange);
+            --shimmer4: #333;
+        }
+
         @keyframes shimmer {
-            0% { background-position: -300% 0; }
-            100% { background-position: 300% 0; }
+            0% {
+                background-position: -300% 0;
+            }
+
+            100% {
+                background-position: 300% 0;
+            }
         }
 
         @keyframes slide-in {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         @keyframes fade-in-up {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes speedometer-needle {
-            0%, 100% { transform: rotate(-45deg); }
-            50% { transform: rotate(45deg); }
+
+            0%,
+            100% {
+                transform: rotate(-45deg);
+            }
+
+            50% {
+                transform: rotate(45deg);
+            }
         }
 
         @keyframes pulse-ring {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.5); opacity: 0; }
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
         }
 
         @keyframes connection-pulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(0, 255, 65, 0.5); }
-            50% { opacity: 0.7; box-shadow: 0 0 20px rgba(0, 255, 65, 0.8); }
+
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 10px var(--connection-glow);
+            }
+
+            50% {
+                opacity: 0.7;
+                box-shadow: 0 0 20px var(--connection-glow-hover);
+            }
         }
 
-        .slide-in { animation: slide-in 0.6s ease-out; }
-        .fade-in-up { animation: fade-in-up 0.8s ease-out; }
+        :root {
+            --connection-glow: rgba(0, 255, 65, 0.5);
+            --connection-glow-hover: rgba(0, 255, 65, 0.8);
+        }
 
-        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.4); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--neon-blue), var(--neon-orange)); border-radius: 10px; }
+        [data-theme="light"] {
+            --connection-glow: rgba(0, 153, 51, 0.5);
+            --connection-glow-hover: rgba(0, 153, 51, 0.8);
+        }
+
+        /* ANIMAÇÕES DE ANIVERSÁRIO */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+
+        @keyframes balloon-float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+
+        @keyframes rocket-launch {
+            0% {
+                transform: translateY(100vh) scale(1);
+            }
+
+            50% {
+                transform: translateY(50vh) scale(1.2);
+            }
+
+            100% {
+                transform: translateY(-100vh) scale(0.5);
+            }
+        }
+
+        @keyframes pulse-heart {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .balloon {
+            position: fixed;
+            width: 60px;
+            height: 70px;
+            border-radius: 50%;
+            animation: balloon-float 15s linear infinite;
+            z-index: 9998;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            width: 2px;
+            height: 15px;
+            background: currentColor;
+            transform: translateX(-50%);
+        }
+
+        .rocket {
+            position: fixed;
+            font-size: 30px;
+            animation: rocket-launch 3s linear infinite;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .heart-beat {
+            animation: pulse-heart 1s infinite;
+            color: var(--neon-pink);
+        }
+
+        .slide-in {
+            animation: slide-in 0.6s ease-out;
+        }
+
+        .fade-in-up {
+            animation: fade-in-up 0.8s ease-out;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--neon-blue), var(--neon-orange));
+            border-radius: 10px;
+        }
+
+        :root {
+            --scrollbar-track: rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="light"] {
+            --scrollbar-track: rgba(0, 0, 0, 0.1);
+        }
 
         .level-badge {
             display: inline-block;
@@ -259,20 +651,36 @@
         }
 
         .level-admin {
-            background: rgba(255, 77, 0, 0.2);
+            background: var(--level-admin-bg);
             color: var(--neon-orange);
             border: 1px solid var(--neon-orange);
         }
 
+        :root {
+            --level-admin-bg: rgba(255, 77, 0, 0.2);
+        }
+
+        [data-theme="light"] {
+            --level-admin-bg: rgba(204, 85, 0, 0.2);
+        }
+
         .level-operador {
-            background: rgba(0, 243, 255, 0.2);
+            background: var(--level-operador-bg);
             color: var(--neon-blue);
             border: 1px solid var(--neon-blue);
         }
 
+        :root {
+            --level-operador-bg: rgba(0, 243, 255, 0.2);
+        }
+
+        [data-theme="light"] {
+            --level-operador-bg: rgba(0, 102, 204, 0.2);
+        }
+
         .stat-card {
-            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(255, 77, 0, 0.05));
-            border: 1px solid rgba(0, 243, 255, 0.2);
+            background: var(--stat-card-bg);
+            border: 1px solid var(--stat-card-border);
             border-radius: 12px;
             padding: 20px;
             transition: all 0.3s ease;
@@ -281,7 +689,53 @@
         .stat-card:hover {
             transform: translateY(-5px);
             border-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 20px var(--stat-card-hover-glow);
+        }
+
+        :root {
+            --stat-card-hover-glow: rgba(0, 243, 255, 0.2);
+        }
+
+        [data-theme="light"] {
+            --stat-card-hover-glow: rgba(0, 102, 204, 0.2);
+        }
+
+        .birthday-stat-card {
+            background: var(--birthday-stat-bg);
+            border: 1px solid var(--birthday-stat-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        :root {
+            --birthday-stat-bg: linear-gradient(135deg, rgba(255, 77, 109, 0.15), rgba(179, 0, 255, 0.15));
+            --birthday-stat-border: rgba(255, 77, 109, 0.3);
+        }
+
+        [data-theme="light"] {
+            --birthday-stat-bg: linear-gradient(135deg, rgba(204, 51, 102, 0.15), rgba(128, 0, 204, 0.15));
+            --birthday-stat-border: rgba(204, 51, 102, 0.3);
+        }
+
+        .birthday-stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--birthday-shine) 1%, transparent 1%);
+            background-size: 20px 20px;
+            opacity: 0.3;
+            animation: shine 4s linear infinite;
+        }
+
+        :root {
+            --birthday-shine: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --birthday-shine: rgba(0, 0, 0, 0.1);
         }
 
         .stat-number {
@@ -291,6 +745,21 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+        }
+
+        .birthday-number {
+            background: linear-gradient(135deg, var(--neon-pink), var(--birthday-orange));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        :root {
+            --birthday-orange: #ff8e4d;
+        }
+
+        [data-theme="light"] {
+            --birthday-orange: #cc6e3d;
         }
 
         .user-avatar {
@@ -307,6 +776,11 @@
             border: 2px solid var(--neon-blue);
         }
 
+        .birthday-avatar {
+            background: linear-gradient(135deg, var(--neon-pink), var(--birthday-orange));
+            border: 2px solid var(--neon-pink);
+        }
+
         .speedometer-container {
             position: relative;
             width: 140px;
@@ -318,25 +792,55 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 4px solid rgba(0, 243, 255, 0.3);
+            border: 4px solid var(--speedometer-ring);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3), 0 0 40px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 20px var(--speedometer-glow1), 0 0 40px var(--speedometer-glow2), inset 0 0 20px var(--speedometer-inset);
+        }
+
+        :root {
+            --speedometer-ring: rgba(0, 243, 255, 0.3);
+            --speedometer-glow1: rgba(0, 243, 255, 0.3);
+            --speedometer-glow2: rgba(0, 243, 255, 0.2);
+            --speedometer-inset: rgba(0, 243, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --speedometer-ring: rgba(0, 102, 204, 0.3);
+            --speedometer-glow1: rgba(0, 102, 204, 0.3);
+            --speedometer-glow2: rgba(0, 102, 204, 0.2);
+            --speedometer-inset: rgba(0, 102, 204, 0.1);
         }
 
         .speedometer-inner {
             position: absolute;
             inset: 8px;
             border-radius: 50%;
-            border: 2px solid rgba(255, 77, 0, 0.2);
+            border: 2px solid var(--speedometer-inner);
+        }
+
+        :root {
+            --speedometer-inner: rgba(255, 77, 0, 0.2);
+        }
+
+        [data-theme="light"] {
+            --speedometer-inner: rgba(204, 85, 0, 0.2);
         }
 
         .speedometer-inner-2 {
             position: absolute;
             inset: 16px;
             border-radius: 50%;
-            border: 1px solid rgba(0, 243, 255, 0.1);
+            border: 1px solid var(--speedometer-inner2);
+        }
+
+        :root {
+            --speedometer-inner2: rgba(0, 243, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --speedometer-inner2: rgba(0, 102, 204, 0.1);
         }
 
         .speedometer-needle {
@@ -357,35 +861,174 @@
             padding: 12px;
         }
 
-        .pulse-ring-1, .pulse-ring-2 {
+        .pulse-ring-1,
+        .pulse-ring-2 {
             position: absolute;
             inset: 0;
             border-radius: 50%;
-            border: 2px solid rgba(0, 243, 255, 0.5);
+            border: 2px solid var(--pulse-ring);
         }
 
-        .pulse-ring-1 { animation: pulse-ring 2s ease-out infinite; }
-        .pulse-ring-2 { animation: pulse-ring 2s ease-out infinite 0.5s; }
+        :root {
+            --pulse-ring: rgba(0, 243, 255, 0.5);
+        }
+
+        [data-theme="light"] {
+            --pulse-ring: rgba(0, 102, 204, 0.5);
+        }
+
+        .pulse-ring-1 {
+            animation: pulse-ring 2s ease-out infinite;
+        }
+
+        .pulse-ring-2 {
+            animation: pulse-ring 2s ease-out infinite 0.5s;
+        }
 
         .connection-status {
             animation: connection-pulse 2s infinite;
         }
 
         .modal-overlay {
-            background: rgba(0, 0, 0, 0.95);
+            background: var(--modal-overlay);
             backdrop-filter: blur(10px);
         }
 
-        .hidden { display: none !important; }
+        :root {
+            --modal-overlay: rgba(0, 0, 0, 0.95);
+        }
+
+        [data-theme="light"] {
+            --modal-overlay: rgba(255, 255, 255, 0.95);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* BIRTHDAY BADGE */
+        .birthday-badge {
+            background: linear-gradient(135deg, var(--neon-pink), var(--birthday-orange));
+            color: white;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+        }
+
+        .age-bubble {
+            background: var(--age-bubble-bg);
+            border: 2px solid var(--age-bubble-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            backdrop-filter: blur(5px);
+        }
+
+        :root {
+            --age-bubble-bg: rgba(255, 255, 255, 0.2);
+            --age-bubble-border: rgba(255, 255, 255, 0.3);
+        }
+
+        [data-theme="light"] {
+            --age-bubble-bg: rgba(0, 0, 0, 0.1);
+            --age-bubble-border: rgba(0, 0, 0, 0.2);
+        }
+
+        .birthday-card {
+            background: var(--birthday-card-bg);
+            border: 1px solid var(--birthday-card-border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        :root {
+            --birthday-card-bg: linear-gradient(135deg, rgba(255, 77, 109, 0.1), rgba(179, 0, 255, 0.05));
+            --birthday-card-border: rgba(255, 77, 109, 0.2);
+        }
+
+        [data-theme="light"] {
+            --birthday-card-bg: linear-gradient(135deg, rgba(204, 51, 102, 0.1), rgba(128, 0, 204, 0.05));
+            --birthday-card-border: rgba(204, 51, 102, 0.2);
+        }
+
+        .birthday-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 20px var(--birthday-card-hover);
+        }
+
+        :root {
+            --birthday-card-hover: rgba(255, 77, 109, 0.2);
+        }
+
+        [data-theme="light"] {
+            --birthday-card-hover: rgba(204, 51, 102, 0.2);
+        }
+
+        /* THEME TRANSITION */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
 
         @media (max-width: 768px) {
-            .slide-title { font-size: 28px; }
-            .slide-description { font-size: 14px; }
-            .slide-overlay { padding: 30px; }
+            .slide-title {
+                font-size: 28px;
+            }
+
+            .slide-description {
+                font-size: 14px;
+            }
+
+            .slide-overlay {
+                padding: 30px;
+            }
+        }
+
+        /* INPUT STYLES */
+        input,
+        select,
+        textarea {
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border-color: var(--input-border);
+        }
+
+        :root {
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-border: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --input-bg: rgba(0, 0, 0, 0.05);
+            --input-border: rgba(0, 0, 0, 0.1);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--neon-blue);
+            background-color: var(--input-focus-bg);
+        }
+
+        :root {
+            --input-focus-bg: rgba(0, 243, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --input-focus-bg: rgba(0, 102, 204, 0.1);
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
+
+<body class="p-4 md:p-8" data-theme="dark">
 
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="min-h-screen flex items-center justify-center">
@@ -404,7 +1047,7 @@
                     <div class="pulse-ring-1"></div>
                     <div class="pulse-ring-2"></div>
                 </div>
-                
+
                 <div class="flex items-center justify-center gap-2 mb-2">
                     <i data-lucide="zap" class="w-5 h-5 text-orange-500 animate-pulse"></i>
                     <h1 class="font-cyber text-3xl font-black shimmer-text">2M MOTOS PRO</h1>
@@ -416,20 +1059,23 @@
             <div class="glass-panel p-10 rounded-3xl border-r-4 border-orange-600 fade-in-up">
                 <div class="space-y-6">
                     <div class="relative">
-                        <input type="text" id="user-login" placeholder="PILOTO" class="w-full bg-black/40 border-b-2 border-gray-800 p-4 text-white focus:border-cyan-400 outline-none font-cyber text-lg transition-colors">
+                        <input type="text" id="user-login" placeholder="PILOTO"
+                            class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white focus:border-cyan-400 outline-none font-cyber text-lg transition-colors">
                         <div class="absolute right-4 top-4 text-cyan-500">
                             <i data-lucide="user" class="w-5"></i>
                         </div>
                     </div>
 
                     <div class="relative">
-                        <input type="password" id="user-pass" placeholder="CHAVE DE IGNIÇÃO" class="w-full bg-black/40 border-b-2 border-gray-800 p-4 text-white focus:border-cyan-400 outline-none font-cyber text-lg transition-colors">
+                        <input type="password" id="user-pass" placeholder="CHAVE DE IGNIÇÃO"
+                            class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white focus:border-cyan-400 outline-none font-cyber text-lg transition-colors">
                         <div class="absolute right-4 top-4 text-orange-500">
                             <i data-lucide="key" class="w-5"></i>
                         </div>
                     </div>
 
-                    <button onclick="handleLogin()" class="w-full btn-accelerate py-4 rounded-xl flex items-center justify-center gap-3 mt-8 font-cyber">
+                    <button onclick="handleLogin()"
+                        class="w-full btn-accelerate py-4 rounded-xl flex items-center justify-center gap-3 mt-8 font-cyber">
                         <span>INICIAR SISTEMA</span>
                         <i data-lucide="zap" class="w-5"></i>
                     </button>
@@ -450,145 +1096,71 @@
 
     <!-- DASHBOARD -->
     <div id="dashboard" class="hidden max-w-7xl mx-auto">
-        <!-- Info Cards Row -->
-        <div id="info-cards" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 mb-8 fade-in-up">
-            <!-- Weather Card -->
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Clima</span>
-                    <i data-lucide="sun" class="w-6 h-6 text-yellow-500"></i>
-                </div>
-                <div class="flex items-baseline gap-1">
-                    <span class="stat-number text-2xl" id="weather-temp">28°</span>
-                </div>
-                <p class="text-xs text-gray-500 mt-1" id="weather-condition">Ensolarado</p>
-            </div>
-
-            <!-- Date Card -->
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Data</span>
-                    <i data-lucide="calendar" class="w-6 h-6 text-orange-500 opacity-50"></i>
-                </div>
-                <p class="text-sm font-bold text-white" id="current-day"></p>
-                <p class="stat-number text-xl" id="current-date-num"></p>
-                <p class="text-xs text-gray-500" id="current-month-year"></p>
-            </div>
-
-            <!-- Time Card -->
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Hora</span>
-                    <i data-lucide="clock" class="w-6 h-6 text-cyan-500 opacity-50 animate-pulse"></i>
-                </div>
-                <p class="stat-number text-2xl font-mono" id="current-time">00:00:00</p>
-                <p class="text-xs text-gray-500 mt-1">Horário Local</p>
-            </div>
-
-            <!-- Connection Time Card -->
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Conectado</span>
-                    <i data-lucide="timer" class="w-6 h-6 text-purple-500 opacity-50"></i>
-                </div>
-                <p class="stat-number text-2xl font-mono" id="connection-time">00:00:00</p>
-                <p class="text-xs text-gray-500 mt-1">Tempo de sessão</p>
-            </div>
-
-            <!-- City Card -->
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Localização</span>
-                    <i data-lucide="map-pin" class="w-6 h-6 text-orange-500 opacity-50"></i>
-                </div>
-                <p class="stat-number text-lg truncate" id="user-city">Carregando...</p>
-                <p class="text-xs text-gray-500 mt-1">Sua cidade</p>
-            </div>
-
-            <!-- Internet Speed Card -->
-            <div class="stat-card">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Internet</span>
-                    <i data-lucide="wifi" class="w-6 h-6 text-green-500 opacity-50"></i>
-                </div>
-                <div class="flex items-baseline gap-1">
-                    <span class="stat-number text-xl" id="internet-speed">0</span>
-                    <span class="text-xs text-gray-500">Mbps</span>
-                </div>
-                <p class="text-xs text-gray-500 mt-1" id="internet-details">↓0 ↑0</p>
-            </div>
-
-            <!-- Baserow Connection Card -->
-            <div class="stat-card border-green-500/30">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-cyber uppercase tracking-widest text-gray-500">Database</span>
-                    <i data-lucide="database" class="w-6 h-6 text-green-500"></i>
-                </div>
-                <p class="text-sm font-bold text-green-400">BASEROW</p>
-                <div class="flex items-center gap-2 mt-2">
-                    <div class="relative">
-                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full connection-status"></div>
-                    </div>
-                    <span class="level-badge bg-green-500/20 text-green-500 border-green-500 text-xs">ATIVA</span>
-                </div>
-                <p class="text-xs text-gray-500 mt-2">API v1.0 • OK</p>
-            </div>
-        </div>
+        <!-- REMOVIDO: Info Cards Row (card do topo do sistema) -->
 
         <!-- BANNER HERO COM NOTÍCIAS EM TEMPO REAL -->
-        <div class="banner-hero">
-            <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=2070')">
+        <div class="banner-hero mb-8">
+            <div class="slide active"
+                style="background-image: url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=2070')">
                 <div class="slide-overlay">
                     <div class="slide-content">
                         <div class="slide-badge live">
                             <span></span> MOTO NEWS LIVE
                         </div>
                         <h2 class="slide-title">DOMÍNIO DAS PISTAS: O FUTURO DA MOTOGP</h2>
-                        <p class="slide-description">Novas regras para 2026 prometem motores mais sustentáveis e maior aerodinâmica ativa.</p>
+                        <p class="slide-description">Novas regras para 2026 prometem motores mais sustentáveis e maior
+                            aerodinâmica ativa.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=2070')">
+            <div class="slide"
+                style="background-image: url('https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?q=80&w=2070')">
                 <div class="slide-overlay">
                     <div class="slide-content">
                         <div class="slide-badge news">LANÇAMENTO MUNDIAL</div>
                         <h2 class="slide-title">DUCATI SUPERLEGGERA V4 J</h2>
-                        <p class="slide-description">A evolução do carbono: Menos peso, mais torque e tecnologia de ponta na palma da mão.</p>
+                        <p class="slide-description">A evolução do carbono: Menos peso, mais torque e tecnologia de
+                            ponta na palma da mão.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1552820728-8ac41f1ce891?q=80&w=2070')">
+            <div class="slide"
+                style="background-image: url('https://images.unsplash.com/photo-1552820728-8ac41f1ce891?q=80&w=2070')">
                 <div class="slide-overlay">
                     <div class="slide-content">
                         <div class="slide-badge live">
                             <span></span> TECNOLOGIA
                         </div>
                         <h2 class="slide-title">REVOLUÇÃO ELÉTRICA NAS MOTOS</h2>
-                        <p class="slide-description">Fabricantes investem bilhões em motocicletas elétricas com autonomia revolucionária.</p>
+                        <p class="slide-description">Fabricantes investem bilhões em motocicletas elétricas com
+                            autonomia revolucionária.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1609630875171-b1321377ee65?q=80&w=2070')">
+            <div class="slide"
+                style="background-image: url('https://images.unsplash.com/photo-1609630875171-b1321377ee65?q=80&w=2070')">
                 <div class="slide-overlay">
                     <div class="slide-content">
                         <div class="slide-badge news">CAMPEONATO</div>
                         <h2 class="slide-title">SUPERBIKE MUNDIAL 2026</h2>
-                        <p class="slide-description">Pilotos de elite competem pela supremacia em velocidade e precisão nas pistas.</p>
+                        <p class="slide-description">Pilotos de elite competem pela supremacia em velocidade e precisão
+                            nas pistas.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Header -->
+        <!-- Header ATUALIZADO COM BOTÃO DE TEMA E COLABORADORES -->
         <header class="glass-panel p-6 rounded-3xl border-l-4 border-cyan-500 mb-10 slide-in">
             <div class="space-y-4">
                 <!-- Linha 1: Logo e informações do usuário -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div class="flex items-center gap-4">
-                        <img src="https://i.ibb.co/DD98rjsH/logo1.png" alt="Logo" class="w-16 drop-shadow-[0_0_10px_rgba(0,243,255,0.3)]">
+                        <img src="https://i.ibb.co/DD98rjsH/logo1.png" alt="Logo"
+                            class="w-16 drop-shadow-[0_0_10px_rgba(0,243,255,0.3)]">
                         <div>
                             <h2 class="font-cyber text-2xl text-white font-black">PAINEL ADMINISTRATIVO</h2>
                             <p id="live-clock" class="text-xs text-orange-500 font-mono tracking-widest mt-1"></p>
@@ -597,13 +1169,32 @@
                     </div>
 
                     <div class="flex gap-3 flex-wrap md:flex-nowrap" id="action-buttons">
-                        <button id="btn-add-system" onclick="openModal('add')" class="hidden p-3 bg-cyan-900/20 text-cyan-400 border border-cyan-800 rounded-xl hover:bg-cyan-500 hover:text-black transition-all font-cyber font-bold" title="Novo Sistema">
+                        <!-- Botão de Tema -->
+                        <button onclick="toggleTheme()" class="p-3 btn-theme-toggle rounded-xl font-cyber font-bold"
+                            title="Alternar Tema">
+                            <i data-lucide="sun" class="w-5 hidden dark:block"></i>
+                            <i data-lucide="moon" class="w-5 block dark:hidden"></i>
+                        </button>
+
+                        <!-- Botão de Colaboradores -->
+                        <button onclick="openColaboradorModal()"
+                            class="p-3 bg-pink-900/20 text-pink-400 border border-pink-800 rounded-xl hover:bg-pink-500 hover:text-black transition-all font-cyber font-bold"
+                            title="Colaboradores">
+                            <i data-lucide="users" class="w-5"></i>
+                        </button>
+
+                        <button id="btn-add-system" onclick="openModal('add')"
+                            class="hidden p-3 bg-cyan-900/20 text-cyan-400 border border-cyan-800 rounded-xl hover:bg-cyan-500 hover:text-black transition-all font-cyber font-bold"
+                            title="Novo Sistema">
                             <i data-lucide="plus-circle" class="w-5"></i>
                         </button>
-                        <button id="btn-add-user" onclick="openUserModal()" class="hidden p-3 bg-orange-900/20 text-orange-400 border border-orange-800 rounded-xl hover:bg-orange-500 hover:text-black transition-all font-cyber font-bold" title="Novo Piloto">
+                        <button id="btn-add-user" onclick="openUserModal()"
+                            class="hidden p-3 bg-orange-900/20 text-orange-400 border border-orange-800 rounded-xl hover:bg-orange-500 hover:text-black transition-all font-cyber font-bold"
+                            title="Novo Piloto">
                             <i data-lucide="user-plus" class="w-5"></i>
                         </button>
-                        <button onclick="handleLogout()" class="p-3 bg-red-900/20 text-red-500 border border-red-800 rounded-xl hover:bg-red-600 hover:text-white transition-all font-cyber font-bold">
+                        <button onclick="handleLogout()"
+                            class="p-3 bg-red-900/20 text-red-500 border border-red-800 rounded-xl hover:bg-red-600 hover:text-white transition-all font-cyber font-bold">
                             <i data-lucide="log-out" class="w-5"></i>
                         </button>
                     </div>
@@ -612,7 +1203,8 @@
         </header>
 
         <!-- Stats Cards (SOMENTE PARA ADMINISTRADORES) -->
-        <div id="stats-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 fade-in-up hidden">
+        <div id="stats-cards-container"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 fade-in-up hidden">
             <div class="stat-card">
                 <div class="flex items-center justify-between">
                     <div>
@@ -646,30 +1238,70 @@
             <div class="stat-card">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-xs font-cyber uppercase tracking-widest">Status</p>
-                        <p class="stat-number mt-2 text-green-400">ONLINE</p>
+                        <p class="text-gray-500 text-xs font-cyber uppercase tracking-widest">Colaboradores</p>
+                        <p class="stat-number mt-2" id="stat-colabs">0</p>
                     </div>
-                    <i data-lucide="activity" class="w-12 h-12 text-green-500 opacity-30"></i>
+                    <i data-lucide="user-cog" class="w-12 h-12 text-pink-500 opacity-30"></i>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content -->
+        <!-- Main Content - LAYOUT ATUALIZADO -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Systems Grid -->
-            <div class="lg:col-span-2 fade-in-up">
+            <div id="systems-container" class="fade-in-up">
                 <h3 class="font-cyber text-cyan-400 mb-6 flex items-center gap-2 text-lg font-black">
                     <i data-lucide="layout-grid"></i> SISTEMAS ATIVOS
                 </h3>
                 <div id="systems-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
             </div>
 
-            <!-- Users List (Admin Only) -->
-            <div id="users-panel" class="glass-panel p-6 rounded-3xl border-t-4 border-orange-500 h-fit fade-in-up hidden">
-                <h3 class="font-cyber text-orange-400 mb-6 flex items-center gap-2 text-lg font-black">
-                    <i data-lucide="shield-check"></i> PILOTOS CADASTRADOS
-                </h3>
-                <div id="users-list" class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2"></div>
+            <!-- Sidebar - ATUALIZADA -->
+            <div id="sidebar" class="lg:col-span-1 space-y-8 fade-in-up">
+                <!-- Users List (Admin Only) -->
+                <div id="users-panel"
+                    class="glass-panel p-6 rounded-3xl border-t-4 border-orange-500 h-fit fade-in-up hidden">
+                    <h3 class="font-cyber text-orange-400 mb-6 flex items-center gap-2 text-lg font-black">
+                        <i data-lucide="shield-check"></i> PILOTOS CADASTRADOS
+                    </h3>
+                    <div id="users-list" class="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-2"></div>
+                </div>
+
+                <!-- Card de Aniversariantes do Dia - PARA OPERADOR E ADMIN -->
+                <div id="birthday-sidebar-card" class="glass-panel p-6 rounded-3xl border-t-4 border-pink-500 hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-cyber text-pink-400 flex items-center gap-2 text-lg font-black">
+                            <i data-lucide="cake" class="w-6"></i> ANIVERSARIANTES DO DIA
+                        </h3>
+                        <span id="sidebar-birthday-count" class="birthday-badge text-xs">0</span>
+                    </div>
+                    <div id="sidebar-birthdays-list"
+                        class="space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
+                        <!-- Aniversariantes do dia serão carregados aqui -->
+                    </div>
+                    <button onclick="showBirthdayModal()"
+                        class="w-full mt-4 py-3 bg-pink-500/10 border border-pink-500/30 text-pink-400 hover:bg-pink-500 hover:text-white transition-colors rounded-xl font-cyber font-bold flex items-center justify-center gap-2">
+                        <i data-lucide="list" class="w-4"></i> Ver todos os aniversariantes
+                    </button>
+                </div>
+
+                <!-- Seção de Aniversariantes do Mês (apenas para admin) -->
+                <div id="birthdays-month-section" class="hidden">
+                    <div class="glass-panel p-6 rounded-3xl border-t-4 border-pink-500">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-cyber text-pink-400 flex items-center gap-2 text-lg font-black">
+                                <i data-lucide="cake" class="w-6"></i> ANIVERSARIANTES DO MÊS
+                            </h3>
+                            <button onclick="showBirthdayModal()"
+                                class="text-sm text-pink-400 hover:text-pink-300 font-cyber flex items-center gap-2">
+                                <i data-lucide="list" class="w-4"></i> Ver todos
+                            </button>
+                        </div>
+                        <div id="birthdays-grid" class="space-y-4 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
+                            <!-- Cards de aniversariantes do mês serão gerados aqui -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -677,15 +1309,21 @@
     <!-- MODAL SISTEMA -->
     <div id="modal-sistema" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-50 p-4">
         <div class="glass-panel w-full max-w-lg p-10 rounded-[2rem] border-t-8 border-cyan-500 fade-in-up">
-            <h2 id="modal-title" class="font-cyber text-2xl text-white mb-6 uppercase font-black">Configurar Máquina</h2>
+            <h2 id="modal-title" class="font-cyber text-2xl text-white mb-6 uppercase font-black">Configurar Máquina
+            </h2>
             <div class="space-y-4">
                 <input type="hidden" id="edit-id">
-                <input type="text" id="sys-name" placeholder="NOME DO SISTEMA" class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-cyan-400 focus:bg-white/10 transition-all">
-                <input type="text" id="sys-logo" placeholder="URL DO LOGO" class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-cyan-400 focus:bg-white/10 transition-all">
-                <input type="text" id="sys-link" placeholder="URL DE ACESSO" class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-cyan-400 focus:bg-white/10 transition-all">
+                <input type="text" id="sys-name" placeholder="NOME DO SISTEMA"
+                    class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-cyan-400 focus:bg-white/10 transition-all">
+                <input type="text" id="sys-logo" placeholder="URL DO LOGO"
+                    class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-cyan-400 focus:bg-white/10 transition-all">
+                <input type="text" id="sys-link" placeholder="URL DE ACESSO"
+                    class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-cyan-400 focus:bg-white/10 transition-all">
                 <div class="flex gap-4 pt-6">
-                    <button onclick="saveSistema()" class="flex-1 btn-accelerate py-4 rounded-xl font-cyber">GRAVAR</button>
-                    <button onclick="closeModal()" class="flex-1 bg-gray-800 py-4 rounded-xl font-cyber font-bold hover:bg-gray-700 transition-all">CANCELAR</button>
+                    <button onclick="saveSistema()"
+                        class="flex-1 btn-accelerate py-4 rounded-xl font-cyber">GRAVAR</button>
+                    <button onclick="closeModal()"
+                        class="flex-1 bg-gray-800 py-4 rounded-xl font-cyber font-bold hover:bg-gray-700 transition-all">CANCELAR</button>
                 </div>
             </div>
         </div>
@@ -697,113 +1335,193 @@
             <h2 id="user-modal-title" class="font-cyber text-2xl text-white mb-6 uppercase font-black">NOVO PILOTO</h2>
             <div class="space-y-4">
                 <input type="hidden" id="u-edit-id">
-                <input type="text" id="u-name" placeholder="NOME COMPLETO" class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
-                <input type="text" id="u-login" placeholder="LOGIN" class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
-                <input type="password" id="u-pass" placeholder="SENHA" class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
-                <select id="u-level" class="w-full bg-black/40 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-orange-500 focus:bg-black/60 transition-all appearance-none font-cyber">
+                <input type="text" id="u-name" placeholder="NOME COMPLETO"
+                    class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
+                <input type="text" id="u-login" placeholder="LOGIN"
+                    class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
+                <input type="password" id="u-pass" placeholder="SENHA"
+                    class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-orange-500 focus:bg-white/10 transition-all">
+                <select id="u-level"
+                    class="w-full bg-black/40 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-orange-500 focus:bg-black/60 transition-all appearance-none font-cyber">
                     <option value="" disabled selected>NÍVEL DE ACESSO</option>
                     <option value="administrador">ADMINISTRADOR</option>
                     <option value="operador">OPERADOR</option>
                 </select>
                 <div class="flex gap-4 pt-6">
-                    <button onclick="saveUser()" class="flex-1 btn-secondary py-4 rounded-xl font-cyber font-bold">AUTORIZAR</button>
-                    <button onclick="closeUserModal()" class="flex-1 bg-gray-800 py-4 rounded-xl font-cyber font-bold hover:bg-gray-700 transition-all">CANCELAR</button>
+                    <button onclick="saveUser()"
+                        class="flex-1 btn-secondary py-4 rounded-xl font-cyber font-bold">AUTORIZAR</button>
+                    <button onclick="closeUserModal()"
+                        class="flex-1 bg-gray-800 py-4 rounded-xl font-cyber font-bold hover:bg-gray-700 transition-all">CANCELAR</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- NOVO MODAL: COLABORADORES -->
+    <div id="modal-colaborador" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-50 p-4">
+        <div class="glass-panel w-full max-w-lg p-10 rounded-[2rem] border-t-8 border-pink-500 fade-in-up">
+            <h2 id="colab-modal-title" class="font-cyber text-2xl text-white mb-6 uppercase font-black">NOVO COLABORADOR
+            </h2>
+            <div class="space-y-4">
+                <input type="hidden" id="colab-edit-id">
+                <input type="text" id="colab-nome" placeholder="NOME COMPLETO"
+                    class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-pink-500 focus:bg-white/10 transition-all">
+                <input type="text" id="colab-cargo" placeholder="CARGO/FUNÇÃO"
+                    class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-pink-500 focus:bg-white/10 transition-all">
+                <input type="date" id="colab-data-nasc" placeholder="DATA DE NASCIMENTO"
+                    class="w-full bg-white/5 border border-gray-700 p-4 rounded-xl text-white outline-none focus:border-pink-500 focus:bg-white/10 transition-all">
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="colab-ativo" checked class="w-5 h-5 accent-pink-500">
+                    <label for="colab-ativo" class="text-gray-400">Ativo</label>
+                </div>
+                <div class="flex gap-4 pt-6">
+                    <button onclick="saveColaborador()"
+                        class="flex-1 bg-pink-600 py-4 rounded-xl font-cyber font-bold hover:bg-pink-700 transition-all text-white">SALVAR</button>
+                    <button onclick="closeColaboradorModal()"
+                        class="flex-1 bg-gray-800 py-4 rounded-xl font-cyber font-bold hover:bg-gray-700 transition-all">CANCELAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: LISTA DE ANIVERSARIANTES -->
+    <div id="modal-birthdays" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-50 p-4">
+        <div
+            class="glass-panel w-full max-w-4xl p-10 rounded-[2rem] border-t-8 border-pink-500 fade-in-up max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="font-cyber text-2xl text-white uppercase font-black">🎂 ANIVERSARIANTES</h2>
+                <button onclick="closeBirthdayModal()" class="text-gray-400 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-6"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="relative">
+                    <input type="text" id="search-colab" placeholder="Buscar colaborador..."
+                        class="w-full bg-white/5 border border-gray-700 p-3 rounded-xl text-white outline-none focus:border-pink-500">
+                    <i data-lucide="search" class="absolute right-3 top-3 text-gray-500"></i>
+                </div>
+                <select id="filter-month"
+                    class="bg-white/5 border border-gray-700 p-3 rounded-xl text-white outline-none focus:border-pink-500">
+                    <option value="all">Todos os meses</option>
+                    <option value="0">Janeiro</option>
+                    <option value="1">Fevereiro</option>
+                    <option value="2">Março</option>
+                    <option value="3">Abril</option>
+                    <option value="4">Maio</option>
+                    <option value="5">Junho</option>
+                    <option value="6">Julho</option>
+                    <option value="7">Agosto</option>
+                    <option value="8">Setembro</option>
+                    <option value="9">Outubro</option>
+                    <option value="10">Novembro</option>
+                    <option value="11">Dezembro</option>
+                </select>
+            </div>
+
+            <div id="birthdays-list" class="space-y-3">
+                <!-- Lista de colaboradores será carregada aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ÁREA PARA BALÕES E FOGOS -->
+    <div id="celebration-area"></div>
 
     <script>
         // ===== CONFIGURAÇÕES BASEROW =====
         const BASEROW_TOKEN = 'qKIgfLN57iiG7V25oEFAfFkNe95DyhQ1';
         const TABLE_EMPRESA = '798835';
         const TABLE_USUARIOS = '798839';
+        const TABLE_COLABORADORES = '820290';
         const API_BASE = 'https://api.baserow.io/api/database/rows/table/';
 
         // ===== ESTADO GLOBAL =====
         let systems = [];
         let users = [];
+        let colaboradores = [];
         let currentUser = null;
         let currentSlide = 0;
         let loginTime = null;
+        let todayBirthdays = [];
+        let celebrationActive = false;
+
+        // ===== FUNÇÃO PARA FORMATAR DATA NO PADRÃO BRASILEIRO =====
+        function formatarDataBrasileira(dataString) {
+            if (!dataString) return '';
+
+            const data = new Date(dataString);
+            if (isNaN(data.getTime())) return dataString;
+
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            return `${dia}/${mes}`;
+        }
+
+        // ===== FUNÇÃO PARA OBTER NOME DO MÊS EM PORTUGUÊS =====
+        function getMesPortugues(mes) {
+            const meses = [
+                'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+            ];
+            return meses[mes];
+        }
 
         // ===== FUNÇÃO PARA OBTER NÍVEL DE ACESSO =====
         function getAcesso(user) {
-            // Suporta diferentes nomes de coluna para compatibilidade
             return user.acesso || user.Nivel_acesso || user.Nivel_accesso || "operador";
+        }
+
+        // ===== GERENCIAMENTO DE TEMA =====
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon();
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon();
+
+            document.body.style.opacity = '0.8';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 300);
+        }
+
+        function updateThemeIcon() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const sunIcon = document.querySelector('[data-lucide="sun"]');
+            const moonIcon = document.querySelector('[data-lucide="moon"]');
+
+            if (currentTheme === 'dark') {
+                if (sunIcon) sunIcon.classList.remove('hidden');
+                if (moonIcon) moonIcon.classList.add('hidden');
+            } else {
+                if (sunIcon) sunIcon.classList.add('hidden');
+                if (moonIcon) moonIcon.classList.remove('hidden');
+            }
+            lucide.createIcons();
         }
 
         // ===== INICIALIZAÇÃO =====
         document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
             lucide.createIcons();
             initializeClock();
             initializeBanner();
-            initializeInfoCards();
+            // REMOVIDO: initializeInfoCards();
             loadStoredUser();
+            setupBirthdayFilters();
         });
 
-        // ===== INFO CARDS =====
+        // ===== INFO CARDS (REMOVIDO) =====
         function initializeInfoCards() {
-            updateDateTime();
-            setInterval(updateDateTime, 1000);
-            setInterval(updateConnectionTime, 1000);
-            getLocation();
-            simulateInternetSpeed();
-            setInterval(simulateInternetSpeed, 30000);
-        }
-
-        function updateDateTime() {
-            const now = new Date();
-            const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-            
-            document.getElementById('current-time').innerText = now.toLocaleTimeString('pt-BR');
-            document.getElementById('current-day').innerText = days[now.getDay()];
-            document.getElementById('current-date-num').innerText = now.getDate();
-            document.getElementById('current-month-year').innerText = `${months[now.getMonth()]} ${now.getFullYear()}`;
-        }
-
-        function updateConnectionTime() {
-            if (!loginTime) return;
-            const now = new Date();
-            const diff = now - loginTime;
-            
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            document.getElementById('connection-time').innerText = 
-                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        }
-
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    async (position) => {
-                        try {
-                            const { latitude, longitude } = position.coords;
-                            const response = await fetch(
-                                `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-                            );
-                            const data = await response.json();
-                            const city = data.address?.city || data.address?.town || data.address?.village || 'Brasil';
-                            document.getElementById('user-city').innerText = city;
-                        } catch {
-                            document.getElementById('user-city').innerText = 'Brasil';
-                        }
-                    },
-                    () => {
-                        document.getElementById('user-city').innerText = 'Brasil';
-                    }
-                );
-            }
-        }
-
-        function simulateInternetSpeed() {
-            const download = Math.floor(Math.random() * 100) + 50;
-            const upload = Math.floor(Math.random() * 50) + 20;
-            document.getElementById('internet-speed').innerText = download;
-            document.getElementById('internet-details').innerText = `↓${download} ↑${upload}`;
+            // Função removida - cards do topo foram eliminados
         }
 
         // ===== BANNER ROTATIVO =====
@@ -895,6 +1613,7 @@
             updateUserInfo();
             applyAccessControl();
             loadData();
+            loadColaboradores();
             lucide.createIcons();
         }
 
@@ -906,31 +1625,51 @@
             }
         }
 
-        // ===== CONTROLE DE ACESSO RIGOROSO =====
+        // ===== CONTROLE DE ACESSO ATUALIZADO =====
         function applyAccessControl() {
             const nivel = getAcesso(currentUser);
             const isAdmin = nivel === 'administrador';
-            
+
             // Controle de botões
             document.getElementById('btn-add-system').classList.toggle('hidden', !isAdmin);
             document.getElementById('btn-add-user').classList.toggle('hidden', !isAdmin);
             document.getElementById('users-panel').classList.toggle('hidden', !isAdmin);
-            
-            // 🔧 CORREÇÃO: Mostrar/ocultar cards de estatísticas apenas para administradores
+
+            // Mostrar/ocultar cards de estatísticas
             document.getElementById('stats-cards-container').classList.toggle('hidden', !isAdmin);
-            
-            // Ajustar layout para operadores
-            const systemsGrid = document.querySelector('.lg\\:col-span-2');
-            if (systemsGrid) {
-                if (!isAdmin) {
-                    // Operador: ocupa todo o espaço com sistemas
-                    systemsGrid.classList.remove('lg:col-span-2');
-                    systemsGrid.classList.add('lg:col-span-3');
-                } else {
-                    // Administrador: mostra painel de usuários também
-                    systemsGrid.classList.remove('lg:col-span-3');
-                    systemsGrid.classList.add('lg:col-span-2');
-                }
+
+            // Ajustar layout conforme tipo de usuário
+            const systemsContainer = document.getElementById('systems-container');
+            const sidebar = document.getElementById('sidebar');
+            const birthdaySidebarCard = document.getElementById('birthday-sidebar-card');
+            const birthdaysMonthSection = document.getElementById('birthdays-month-section');
+
+            if (isAdmin) {
+                // ADMIN: Sistema ocupa 2 colunas, sidebar 1 coluna
+                systemsContainer.classList.remove('lg:col-span-3');
+                systemsContainer.classList.add('lg:col-span-2');
+
+                // Mostrar painel de usuários
+                document.getElementById('users-panel').classList.remove('hidden');
+
+                // Mostrar aniversariantes do mês
+                birthdaysMonthSection.classList.remove('hidden');
+
+                // Esconder card lateral simples de aniversariantes
+                birthdaySidebarCard.classList.add('hidden');
+            } else {
+                // OPERADOR: Sistema ocupa 2 colunas, sidebar 1 coluna com card de aniversariantes
+                systemsContainer.classList.remove('lg:col-span-2', 'lg:col-span-3');
+                systemsContainer.classList.add('lg:col-span-2');
+
+                // Esconder painel de usuários
+                document.getElementById('users-panel').classList.add('hidden');
+
+                // Esconder aniversariantes do mês
+                birthdaysMonthSection.classList.add('hidden');
+
+                // Mostrar card lateral de aniversariantes do dia
+                birthdaySidebarCard.classList.remove('hidden');
             }
         }
 
@@ -968,16 +1707,263 @@
             }
         }
 
+        // ===== FUNÇÕES PARA COLABORADORES =====
+        async function loadColaboradores() {
+            try {
+                const res = await fetch(`${API_BASE}${TABLE_COLABORADORES}/?user_field_names=true`, {
+                    headers: { 'Authorization': `Token ${BASEROW_TOKEN}` }
+                });
+                const data = await res.json();
+                colaboradores = data.results || [];
+                checkBirthdays();
+                updateStats();
+            } catch (err) {
+                console.error('Erro ao carregar colaboradores:', err);
+            }
+        }
+
+        function checkBirthdays() {
+            const today = new Date();
+            const todayMonth = today.getMonth();
+            const todayDate = today.getDate();
+
+            todayBirthdays = colaboradores.filter(colab => {
+                if (!colab.data_nascimento || colab.ativo === false) return false;
+
+                const birthDate = new Date(colab.data_nascimento);
+                return birthDate.getMonth() === todayMonth &&
+                    birthDate.getDate() === todayDate;
+            });
+
+            // Atualizar sidebar card para operadores
+            updateBirthdaySidebarCard();
+
+            // Atualizar grid de aniversariantes do mês para admin
+            renderBirthdaysGrid();
+
+            // Ativar celebração se houver aniversariantes
+            if (todayBirthdays.length > 0 && !celebrationActive) {
+                const lastCelebration = localStorage.getItem('lastBirthdayCelebration');
+                const todayStr = today.toDateString();
+
+                if (lastCelebration !== todayStr) {
+                    setTimeout(() => {
+                        startCelebration();
+                        localStorage.setItem('lastBirthdayCelebration', todayStr);
+                    }, 2000);
+                }
+            }
+        }
+
+        // ===== NOVA FUNÇÃO: Atualizar card lateral de aniversariantes =====
+        function updateBirthdaySidebarCard() {
+            const card = document.getElementById('birthday-sidebar-card');
+            const countBadge = document.getElementById('sidebar-birthday-count');
+            const list = document.getElementById('sidebar-birthdays-list');
+
+            if (todayBirthdays.length > 0) {
+                card.classList.remove('hidden');
+                countBadge.textContent = todayBirthdays.length;
+
+                // Renderizar lista de aniversariantes do dia
+                list.innerHTML = todayBirthdays.map(colab => {
+                    const birthDate = new Date(colab.data_nascimento);
+                    const age = new Date().getFullYear() - birthDate.getFullYear();
+                    const dataFormatada = formatarDataBrasileira(colab.data_nascimento);
+
+                    return `
+                        <div class="birthday-card p-4 rounded-xl border border-pink-500/20">
+                            <div class="flex items-center gap-3">
+                                <div class="user-avatar birthday-avatar">
+                                    ${colab.nome.charAt(0).toUpperCase()}
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-white text-sm">${colab.nome}</h4>
+                                    <p class="text-xs text-gray-400">${colab.cargo || 'Colaborador'}</p>
+                                    <div class="flex items-center gap-4 mt-2">
+                                        <span class="text-xs text-gray-500">
+                                            <i data-lucide="calendar" class="w-3 inline mr-1"></i>
+                                            ${dataFormatada}
+                                        </span>
+                                        <span class="text-xs text-gray-500">
+                                            <i data-lucide="cake" class="w-3 inline mr-1"></i>
+                                            ${age} anos
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="celebrateBirthday('${colab.nome}')" 
+                                    class="w-full mt-3 py-2 bg-pink-500/20 text-pink-400 border border-pink-500/30 rounded-lg hover:bg-pink-500 hover:text-white transition-colors text-xs font-cyber">
+                                🎉 Parabenizar
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+
+                // Adicionar botão de celebração se houver mais de um aniversariante
+                if (todayBirthdays.length > 1) {
+                    list.innerHTML += `
+                        <button onclick="celebrateAllBirthdays()" 
+                                class="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-cyber font-bold hover:opacity-90 transition-all mt-4">
+                            🎊 Celebrar Todos os Aniversariantes
+                        </button>
+                    `;
+                }
+            } else {
+                card.classList.remove('hidden'); // Sempre mostrar o card, mesmo se vazio
+                countBadge.textContent = '0';
+                list.innerHTML = `
+                    <div class="text-center py-6">
+                        <i data-lucide="cake" class="w-12 h-12 text-gray-600 mx-auto mb-3"></i>
+                        <p class="text-gray-500 text-sm">Nenhum aniversariante hoje</p>
+                    </div>
+                `;
+            }
+            lucide.createIcons();
+        }
+
+        // ===== FUNÇÃO ATUALIZADA: renderBirthdaysGrid (apenas para admin) =====
+        function renderBirthdaysGrid() {
+            const grid = document.getElementById('birthdays-grid');
+            const section = document.getElementById('birthdays-month-section');
+            if (!grid || !section) return;
+
+            const today = new Date();
+            const currentMonth = today.getMonth();
+
+            // Filtrar aniversariantes do mês atual ativos
+            const monthBirthdays = colaboradores.filter(colab => {
+                if (!colab.data_nascimento || colab.ativo === false) return false;
+                const birthDate = new Date(colab.data_nascimento);
+                return birthDate.getMonth() === currentMonth;
+            }).sort((a, b) => {
+                const dateA = new Date(a.data_nascimento);
+                const dateB = new Date(b.data_nascimento);
+                return dateA.getDate() - dateB.getDate();
+            });
+
+            if (monthBirthdays.length > 0) {
+                section.classList.remove('hidden');
+
+                grid.innerHTML = monthBirthdays.slice(0, 6).map(colab => {
+                    const birthDate = new Date(colab.data_nascimento);
+                    const today = new Date();
+                    const age = today.getFullYear() - birthDate.getFullYear();
+                    const isToday = birthDate.getDate() === today.getDate() &&
+                        birthDate.getMonth() === today.getMonth();
+
+                    const dataFormatada = formatarDataBrasileira(colab.data_nascimento);
+                    const mesNome = getMesPortugues(birthDate.getMonth());
+
+                    const nivel = getAcesso(currentUser);
+                    const isAdmin = nivel === 'administrador';
+
+                    return `
+                        <div class="birthday-card p-4 rounded-xl border border-pink-500/20 hover:border-pink-500/50 transition-colors">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="user-avatar birthday-avatar">
+                                        ${colab.nome.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-white text-sm">${colab.nome}</h4>
+                                        <p class="text-xs text-gray-400">${colab.cargo || 'Colaborador'}</p>
+                                    </div>
+                                </div>
+                                ${isToday ?
+                            '<span class="birthday-badge text-xs">HOJE!</span>' :
+                            `<div class="text-center">
+                                        <div class="text-xs text-gray-500">${mesNome}</div>
+                                        <div class="text-lg font-bold text-white">${birthDate.getDate()}</div>
+                                    </div>`
+                        }
+                            </div>
+                            
+                            <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-800">
+                                <div class="text-sm">
+                                    <div class="text-gray-500 text-xs">Data de Nascimento</div>
+                                    <div class="text-white font-bold">${dataFormatada}</div>
+                                </div>
+                                <div class="age-bubble text-sm">
+                                    ${age} anos
+                                </div>
+                            </div>
+                            
+                            <!-- BOTÕES DE AÇÃO - APENAS PARA ADMIN -->
+                            ${isAdmin ? `
+                                <div class="flex gap-2 mt-4 pt-4 border-t border-gray-800">
+                                    <button onclick="celebrateBirthday('${colab.nome}')" 
+                                            class="flex-1 py-2 bg-pink-500/20 text-pink-400 border border-pink-500/30 rounded-lg hover:bg-pink-500 hover:text-white transition-colors text-xs">
+                                        🎉 Celebrar
+                                    </button>
+                                    <button onclick="openColaboradorModal(${colab.id})" 
+                                            class="px-3 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg hover:bg-cyan-500 hover:text-white transition-colors"
+                                            title="Editar">
+                                        <i data-lucide="edit-2" class="w-4"></i>
+                                    </button>
+                                    <button onclick="deleteColaborador(${colab.id})" 
+                                            class="px-3 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
+                                            title="Remover">
+                                        <i data-lucide="trash-2" class="w-4"></i>
+                                    </button>
+                                </div>
+                            ` : `
+                                <button onclick="celebrateBirthday('${colab.nome}')" 
+                                        class="w-full mt-4 py-2 bg-pink-500/20 text-pink-400 border border-pink-500/30 rounded-lg hover:bg-pink-500 hover:text-white transition-colors text-xs font-cyber">
+                                    🎉 Celebrar Aniversário
+                                </button>
+                            `}
+                        </div>
+                    `;
+                }).join('');
+
+                if (monthBirthdays.length > 6) {
+                    grid.innerHTML += `
+                        <div class="birthday-card p-4 rounded-xl border border-pink-500/20 flex flex-col items-center justify-center">
+                            <i data-lucide="cake" class="w-8 h-8 text-pink-500 mb-2"></i>
+                            <p class="text-base font-bold text-white">+${monthBirthdays.length - 6}</p>
+                            <p class="text-xs text-gray-400">mais aniversariantes</p>
+                            <button onclick="showBirthdayModal()" class="mt-3 text-pink-400 hover:text-pink-300 text-xs font-cyber">
+                                Ver todos os aniversariantes
+                            </button>
+                        </div>
+                    `;
+                }
+            } else {
+                section.classList.add('hidden');
+            }
+            lucide.createIcons();
+        }
+
+        // ===== NOVA FUNÇÃO: celebrateAllBirthdays =====
+        function celebrateAllBirthdays() {
+            const names = todayBirthdays.map(c => c.nome).join(', ');
+            Swal.fire({
+                title: '🎊 Parabéns a Todos!',
+                html: `<p class="text-lg">${names}</p><p class="text-gray-400 mt-2">Deseja celebrar todos os aniversariantes?</p>`,
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: '🎉 Celebrar Todos!',
+                cancelButtonText: 'Mais tarde',
+                background: 'rgba(15, 15, 20, 0.95)',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    launchFullCelebration();
+                }
+            });
+        }
+
         function updateStats() {
             const nivel = getAcesso(currentUser);
             const isAdmin = nivel === 'administrador';
-            
-            // Só atualiza stats se for admin
+
             if (isAdmin) {
                 const admins = users.filter(u => getAcesso(u) === 'administrador').length;
                 document.getElementById('stat-pilots').innerText = users.length;
                 document.getElementById('stat-systems').innerText = systems.length;
                 document.getElementById('stat-admins').innerText = admins;
+                document.getElementById('stat-colabs').innerText = colaboradores.filter(c => c.ativo !== false).length;
             }
         }
 
@@ -1028,8 +2014,7 @@
 
             const nivel = getAcesso(currentUser);
             const isAdmin = nivel === 'administrador';
-            
-            // Só renderiza usuários se for admin
+
             if (!isAdmin) return;
 
             if (users.length === 0) {
@@ -1065,6 +2050,361 @@
                     </div>
                 `;
             });
+            lucide.createIcons();
+        }
+
+        // ===== ANIMAÇÕES DE CELEBRAÇÃO =====
+        function startCelebration() {
+            if (celebrationActive) return;
+            celebrationActive = true;
+
+            Swal.fire({
+                title: '🎉 Parabéns!',
+                text: `Hoje é aniversário de ${todayBirthdays.map(c => c.nome).join(', ')}!`,
+                icon: 'success',
+                confirmButtonText: 'Celebrar!',
+                background: 'rgba(15, 15, 20, 0.95)',
+                color: '#fff',
+                showCancelButton: true,
+                cancelButtonText: 'Mais tarde'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    launchFullCelebration();
+                }
+            });
+
+            createBalloons(3);
+
+            setTimeout(() => {
+                celebrationActive = false;
+            }, 30000);
+        }
+
+        function createBalloons(count) {
+            const colors = ['#ff4d6d', '#ff8e4d', '#ffd166', '#06d6a0', '#118ab2', '#9d4edd'];
+            const area = document.getElementById('celebration-area');
+
+            for (let i = 0; i < count; i++) {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                balloon.style.left = `${Math.random() * 100}%`;
+                balloon.style.animationDelay = `${Math.random() * 5}s`;
+                balloon.style.background = `radial-gradient(circle at 30% 30%, ${colors[Math.floor(Math.random() * colors.length)]}, ${colors[Math.floor(Math.random() * colors.length)]})`;
+                balloon.style.width = `${40 + Math.random() * 30}px`;
+                balloon.style.height = `${50 + Math.random() * 40}px`;
+
+                area.appendChild(balloon);
+
+                setTimeout(() => {
+                    balloon.remove();
+                }, 15000);
+            }
+        }
+
+        function createRockets(count) {
+            const area = document.getElementById('celebration-area');
+            const emojis = ['🚀', '🎆', '✨', '🎇', '💥'];
+
+            for (let i = 0; i < count; i++) {
+                const rocket = document.createElement('div');
+                rocket.className = 'rocket';
+                rocket.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                rocket.style.left = `${Math.random() * 100}%`;
+                rocket.style.fontSize = `${20 + Math.random() * 40}px`;
+                rocket.style.animationDelay = `${Math.random() * 2}s`;
+
+                area.appendChild(rocket);
+
+                setTimeout(() => {
+                    rocket.remove();
+                }, 3000);
+            }
+        }
+
+        function launchFullCelebration() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff4d6d', '#ff8e4d', '#ffd166', '#06d6a0']
+            });
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 100,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff4d6d', '#ff8e4d']
+                });
+            }, 250);
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 100,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ffd166', '#06d6a0']
+                });
+            }, 500);
+
+            createBalloons(10);
+            createRockets(5);
+        }
+
+        function celebrateBirthday(name) {
+            Swal.fire({
+                title: `🎂 ${name}!`,
+                text: 'Enviar parabéns?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Enviar mensagem!',
+                cancelButtonText: 'Celebrar aqui',
+                background: 'rgba(15, 15, 20, 0.95)',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('🎉', 'Mensagem enviada com sucesso!', 'success');
+                }
+                launchFullCelebration();
+            });
+        }
+
+        // ===== MODAIS DE COLABORADORES =====
+        function openColaboradorModal(editId = null) {
+            const modal = document.getElementById('modal-colaborador');
+            const title = document.getElementById('colab-modal-title');
+
+            if (editId) {
+                const colab = colaboradores.find(c => c.id === editId);
+                if (colab) {
+                    title.textContent = "EDITAR COLABORADOR";
+                    document.getElementById('colab-edit-id').value = colab.id;
+                    document.getElementById('colab-nome').value = colab.nome || '';
+                    document.getElementById('colab-cargo').value = colab.cargo || '';
+                    document.getElementById('colab-data-nasc').value = colab.data_nascimento || '';
+                    document.getElementById('colab-ativo').checked = colab.ativo !== false;
+                }
+            } else {
+                title.textContent = "NOVO COLABORADOR";
+                document.getElementById('colab-edit-id').value = '';
+                document.getElementById('colab-nome').value = '';
+                document.getElementById('colab-cargo').value = '';
+                document.getElementById('colab-data-nasc').value = '';
+                document.getElementById('colab-ativo').checked = true;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeColaboradorModal() {
+            document.getElementById('modal-colaborador').classList.add('hidden');
+        }
+
+        async function saveColaborador() {
+            const id = document.getElementById('colab-edit-id').value;
+            const nome = document.getElementById('colab-nome').value.trim();
+            const cargo = document.getElementById('colab-cargo').value.trim();
+            const dataNasc = document.getElementById('colab-data-nasc').value;
+            const ativo = document.getElementById('colab-ativo').checked;
+
+            if (!nome || !dataNasc) {
+                Swal.fire('Aviso', 'Preencha nome e data de nascimento', 'warning');
+                return;
+            }
+
+            const payload = {
+                "nome": nome,
+                "cargo": cargo,
+                "data_nascimento": dataNasc,
+                "ativo": ativo
+            };
+
+            const method = id ? 'PATCH' : 'POST';
+            const url = id ?
+                `${API_BASE}${TABLE_COLABORADORES}/${id}/?user_field_names=true` :
+                `${API_BASE}${TABLE_COLABORADORES}/?user_field_names=true`;
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Token ${BASEROW_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    Swal.fire('Sucesso', 'Colaborador salvo com sucesso!', 'success');
+                    closeColaboradorModal();
+                    loadColaboradores();
+                } else {
+                    Swal.fire('Erro', 'Falha ao salvar colaborador', 'error');
+                }
+            } catch (err) {
+                Swal.fire('Erro', 'Erro na conexão', 'error');
+                console.error(err);
+            }
+        }
+
+        async function deleteColaborador(id) {
+            Swal.fire({
+                title: 'Deletar Colaborador?',
+                text: 'Esta ação não pode ser desfeita',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, deletar',
+                cancelButtonText: 'Cancelar',
+                background: 'rgba(15, 15, 20, 0.95)',
+                color: '#fff'
+            }).then(async result => {
+                if (result.isConfirmed) {
+                    try {
+                        await fetch(`${API_BASE}${TABLE_COLABORADORES}/${id}/`, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': `Token ${BASEROW_TOKEN}` }
+                        });
+                        Swal.fire('Deletado', 'Colaborador removido com sucesso', 'success');
+                        loadColaboradores();
+                    } catch (err) {
+                        Swal.fire('Erro', 'Falha ao deletar', 'error');
+                    }
+                }
+            });
+        }
+
+        // ===== MODAL DE ANIVERSARIANTES =====
+        function showBirthdayModal() {
+            const modal = document.getElementById('modal-birthdays');
+            modal.classList.remove('hidden');
+            renderBirthdaysList();
+        }
+
+        function closeBirthdayModal() {
+            document.getElementById('modal-birthdays').classList.add('hidden');
+        }
+
+        function setupBirthdayFilters() {
+            const searchInput = document.getElementById('search-colab');
+            const monthFilter = document.getElementById('filter-month');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const month = monthFilter ? monthFilter.value : 'all';
+                    renderBirthdaysList(e.target.value, month);
+                });
+            }
+
+            if (monthFilter) {
+                monthFilter.addEventListener('change', (e) => {
+                    const searchTerm = searchInput ? searchInput.value : '';
+                    renderBirthdaysList(searchTerm, e.target.value);
+                });
+            }
+        }
+
+        // ===== FUNÇÃO ATUALIZADA: renderBirthdaysList com controle de acesso =====
+        function renderBirthdaysList(searchTerm = '', monthFilter = 'all') {
+            const list = document.getElementById('birthdays-list');
+            const nivel = getAcesso(currentUser);
+            const isAdmin = nivel === 'administrador';
+
+            let filtered = [...colaboradores].filter(colab => colab.ativo !== false);
+
+            if (searchTerm) {
+                filtered = filtered.filter(colab =>
+                    colab.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (colab.cargo && colab.cargo.toLowerCase().includes(searchTerm.toLowerCase()))
+                );
+            }
+
+            if (monthFilter !== 'all') {
+                const month = parseInt(monthFilter);
+                filtered = filtered.filter(colab => {
+                    if (!colab.data_nascimento) return false;
+                    const birthDate = new Date(colab.data_nascimento);
+                    return birthDate.getMonth() === month;
+                });
+            }
+
+            filtered.sort((a, b) => {
+                const dateA = new Date(a.data_nascimento);
+                const dateB = new Date(b.data_nascimento);
+                return dateA.getDate() - dateB.getDate();
+            });
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-12">
+                        <i data-lucide="users" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                        <p class="text-gray-500">Nenhum colaborador encontrado</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            list.innerHTML = filtered.map(colab => {
+                const birthDate = new Date(colab.data_nascimento);
+                const today = new Date();
+                const age = today.getFullYear() - birthDate.getFullYear();
+                const nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+                if (nextBirthday < today) {
+                    nextBirthday.setFullYear(today.getFullYear() + 1);
+                }
+                const daysUntil = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
+                const isToday = daysUntil === 0;
+
+                const dataFormatada = formatarDataBrasileira(colab.data_nascimento);
+                const mesNome = getMesPortugues(birthDate.getMonth());
+
+                return `
+                    <div class="glass-panel p-4 rounded-xl flex items-center justify-between ${isToday ? 'border-l-4 border-pink-500' : ''}">
+                        <div class="flex items-center gap-4 flex-1">
+                            <div class="user-avatar ${isToday ? 'birthday-avatar' : ''}">
+                                ${colab.nome.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white">${colab.nome}</h4>
+                                <p class="text-sm text-gray-400">${colab.cargo || 'Colaborador'}</p>
+                                <div class="flex items-center gap-4 mt-2">
+                                    <span class="text-xs text-gray-500">
+                                        <i data-lucide="calendar" class="w-3 inline mr-1"></i>
+                                        ${dataFormatada} (${mesNome})
+                                    </span>
+                                    <span class="text-xs text-gray-500">
+                                        <i data-lucide="cake" class="w-3 inline mr-1"></i>
+                                        ${age} anos
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-3">
+                            ${isToday ?
+                        '<span class="birthday-badge text-xs">HOJE!</span>' :
+                        `<span class="text-xs ${daysUntil <= 7 ? 'text-orange-400' : 'text-gray-500'}">
+                                    Faltam ${daysUntil} dias
+                                </span>`
+                    }
+                            <!-- BOTÕES DE AÇÃO - APENAS PARA ADMIN -->
+                            ${isAdmin ? `
+                                <div class="flex gap-2">
+                                    <button onclick="openColaboradorModal(${colab.id})" class="text-gray-400 hover:text-cyan-400 transition-colors">
+                                        <i data-lucide="edit-2" class="w-4"></i>
+                                    </button>
+                                    <button onclick="deleteColaborador(${colab.id})" class="text-gray-400 hover:text-red-400 transition-colors">
+                                        <i data-lucide="trash-2" class="w-4"></i>
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
             lucide.createIcons();
         }
 
@@ -1184,14 +2524,13 @@
                 return;
             }
 
-            // 🔧 CORREÇÃO: Usar "acesso" como nome da coluna
-            const payload = { 
-                "Name_user": name, 
-                "Login": login, 
-                "Senha": pass, 
-                "acesso": level  // Nome correto da coluna no Baserow
+            const payload = {
+                "Name_user": name,
+                "Login": login,
+                "Senha": pass,
+                "acesso": level
             };
-            
+
             const method = id ? 'PATCH' : 'POST';
             const url = id ? `${API_BASE}${TABLE_USUARIOS}/${id}/?user_field_names=true` : `${API_BASE}${TABLE_USUARIOS}/?user_field_names=true`;
 
@@ -1248,7 +2587,6 @@
                 document.getElementById('u-name').value = u.Name_user;
                 document.getElementById('u-login').value = u.Login;
                 document.getElementById('u-pass').value = u.Senha;
-                // 🔧 CORREÇÃO: Usar "acesso" como nome da coluna
                 document.getElementById('u-level').value = u.acesso || u.Nivel_acesso || u.Nivel_accesso || "";
                 document.getElementById('modal-usuario').classList.remove('hidden');
             }
@@ -1256,20 +2594,39 @@
 
         // ===== FECHAR MODAIS AO CLICAR FORA =====
         document.addEventListener('click', (e) => {
-            const modalSistema = document.getElementById('modal-sistema');
-            const modalUsuario = document.getElementById('modal-usuario');
-
-            if (e.target === modalSistema) modalSistema.classList.add('hidden');
-            if (e.target === modalUsuario) modalUsuario.classList.add('hidden');
+            const modals = ['modal-sistema', 'modal-usuario', 'modal-colaborador', 'modal-birthdays'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal && e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
         });
 
         // ===== TECLA ESC PARA FECHAR MODAIS =====
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                document.getElementById('modal-sistema').classList.add('hidden');
-                document.getElementById('modal-usuario').classList.add('hidden');
+                const modals = ['modal-sistema', 'modal-usuario', 'modal-colaborador', 'modal-birthdays'];
+                modals.forEach(modalId => {
+                    const modal = document.getElementById(modalId);
+                    if (modal) modal.classList.add('hidden');
+                });
             }
         });
+
+        // ===== VERIFICAÇÃO DIÁRIA DE ANIVERSÁRIOS =====
+        function checkDailyBirthdays() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+
+            if (hours === 9 && minutes === 0) {
+                checkBirthdays();
+            }
+        }
+
+        setInterval(checkDailyBirthdays, 60000);
     </script>
 </body>
+
 </html>
