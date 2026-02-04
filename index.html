@@ -1446,11 +1446,11 @@
         let todayBirthdays = [];
         let celebrationActive = false;
 
-        // ===== FUNÇÃO PARA FORMATAR DATA NO PADRÃO BRASILEIRO =====
+        // ===== FUNÇÕES CORRIGIDAS PARA MANIPULAÇÃO DE DATAS =====
         function formatarDataBrasileira(dataString) {
             if (!dataString) return '';
 
-            const data = new Date(dataString);
+            const data = parseDateWithoutTimezone(dataString);
             if (isNaN(data.getTime())) return dataString;
 
             const dia = String(data.getDate()).padStart(2, '0');
@@ -1458,7 +1458,64 @@
             return `${dia}/${mes}`;
         }
 
-        // ===== FUNÇÃO PARA OBTER NOME DO MÊS EM PORTUGUÊS =====
+        // FUNÇÃO CRÍTICA: Corrigir problema do fuso horário ao criar Date
+        function parseDateWithoutTimezone(dateString) {
+            // Se a data já for um objeto Date, retorna como está
+            if (dateString instanceof Date) return dateString;
+
+            // Se for string no formato YYYY-MM-DD
+            if (typeof dateString === 'string' && dateString.includes('-')) {
+                const [year, month, day] = dateString.split('-').map(Number);
+                // Criar data sem considerar fuso horário (meia-noite local)
+                return new Date(year, month - 1, day, 12, 0, 0); // Usar meio-dia para evitar problemas de fuso
+            }
+
+            // Fallback para o construtor padrão
+            return new Date(dateString);
+        }
+
+        // FUNÇÃO CORRIGIDA: Comparar datas ignorando fuso horário
+        function datesAreEqual(date1, date2) {
+            const d1 = parseDateWithoutTimezone(date1);
+            const d2 = parseDateWithoutTimezone(date2);
+
+            return d1.getDate() === d2.getDate() &&
+                d1.getMonth() === d2.getMonth();
+        }
+
+        // FUNÇÃO CORRIGIDA: Calcular idade corretamente
+        function calcularIdade(dataNascimento) {
+            const hoje = new Date();
+            const nascimento = parseDateWithoutTimezone(dataNascimento);
+
+            let idade = hoje.getFullYear() - nascimento.getFullYear();
+            const mesAtual = hoje.getMonth();
+            const diaAtual = hoje.getDate();
+            const mesNasc = nascimento.getMonth();
+            const diaNasc = nascimento.getDate();
+
+            // Ajustar se ainda não fez aniversário este ano
+            if (mesAtual < mesNasc || (mesAtual === mesNasc && diaAtual < diaNasc)) {
+                idade--;
+            }
+
+            return idade;
+        }
+
+        // FUNÇÃO CORRIGIDA: Formatar data para input type="date"
+        function formatDateForInput(dateString) {
+            if (!dateString) return '';
+
+            const date = parseDateWithoutTimezone(dateString);
+            if (isNaN(date.getTime())) return '';
+
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+
+            return `${year}-${month}-${day}`;
+        }
+
         function getMesPortugues(mes) {
             const meses = [
                 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -1467,7 +1524,6 @@
             return meses[mes];
         }
 
-        // ===== FUNÇÃO PARA OBTER NÍVEL DE ACESSO =====
         function getAcesso(user) {
             return user.acesso || user.Nivel_acesso || user.Nivel_accesso || "operador";
         }
@@ -1514,15 +1570,9 @@
             lucide.createIcons();
             initializeClock();
             initializeBanner();
-            // REMOVIDO: initializeInfoCards();
             loadStoredUser();
             setupBirthdayFilters();
         });
-
-        // ===== INFO CARDS (REMOVIDO) =====
-        function initializeInfoCards() {
-            // Função removida - cards do topo foram eliminados
-        }
 
         // ===== BANNER ROTATIVO =====
         function initializeBanner() {
@@ -1722,6 +1772,7 @@
             }
         }
 
+        // FUNÇÃO CORRIGIDA: Verificar aniversariantes do dia
         function checkBirthdays() {
             const today = new Date();
             const todayMonth = today.getMonth();
@@ -1730,9 +1781,8 @@
             todayBirthdays = colaboradores.filter(colab => {
                 if (!colab.data_nascimento || colab.ativo === false) return false;
 
-                const birthDate = new Date(colab.data_nascimento);
-                return birthDate.getMonth() === todayMonth &&
-                    birthDate.getDate() === todayDate;
+                // Usar a função corrigida para comparar datas
+                return datesAreEqual(colab.data_nascimento, today);
             });
 
             // Atualizar sidebar card para operadores
@@ -1755,7 +1805,7 @@
             }
         }
 
-        // ===== NOVA FUNÇÃO: Atualizar card lateral de aniversariantes =====
+        // ===== ATUALIZAR CARD LATERAL DE ANIVERSARIANTES =====
         function updateBirthdaySidebarCard() {
             const card = document.getElementById('birthday-sidebar-card');
             const countBadge = document.getElementById('sidebar-birthday-count');
@@ -1767,8 +1817,7 @@
 
                 // Renderizar lista de aniversariantes do dia
                 list.innerHTML = todayBirthdays.map(colab => {
-                    const birthDate = new Date(colab.data_nascimento);
-                    const age = new Date().getFullYear() - birthDate.getFullYear();
+                    const age = calcularIdade(colab.data_nascimento);
                     const dataFormatada = formatarDataBrasileira(colab.data_nascimento);
 
                     return `
@@ -1834,11 +1883,11 @@
             // Filtrar aniversariantes do mês atual ativos
             const monthBirthdays = colaboradores.filter(colab => {
                 if (!colab.data_nascimento || colab.ativo === false) return false;
-                const birthDate = new Date(colab.data_nascimento);
+                const birthDate = parseDateWithoutTimezone(colab.data_nascimento);
                 return birthDate.getMonth() === currentMonth;
             }).sort((a, b) => {
-                const dateA = new Date(a.data_nascimento);
-                const dateB = new Date(b.data_nascimento);
+                const dateA = parseDateWithoutTimezone(a.data_nascimento);
+                const dateB = parseDateWithoutTimezone(b.data_nascimento);
                 return dateA.getDate() - dateB.getDate();
             });
 
@@ -1846,11 +1895,10 @@
                 section.classList.remove('hidden');
 
                 grid.innerHTML = monthBirthdays.slice(0, 6).map(colab => {
-                    const birthDate = new Date(colab.data_nascimento);
+                    const birthDate = parseDateWithoutTimezone(colab.data_nascimento);
                     const today = new Date();
-                    const age = today.getFullYear() - birthDate.getFullYear();
-                    const isToday = birthDate.getDate() === today.getDate() &&
-                        birthDate.getMonth() === today.getMonth();
+                    const age = calcularIdade(colab.data_nascimento);
+                    const isToday = datesAreEqual(colab.data_nascimento, today);
 
                     const dataFormatada = formatarDataBrasileira(colab.data_nascimento);
                     const mesNome = getMesPortugues(birthDate.getMonth());
@@ -1935,7 +1983,7 @@
             lucide.createIcons();
         }
 
-        // ===== NOVA FUNÇÃO: celebrateAllBirthdays =====
+        // ===== CELEBRAR TODOS OS ANIVERSARIANTES =====
         function celebrateAllBirthdays() {
             const names = todayBirthdays.map(c => c.nome).join(', ');
             Swal.fire({
@@ -2183,7 +2231,8 @@
                     document.getElementById('colab-edit-id').value = colab.id;
                     document.getElementById('colab-nome').value = colab.nome || '';
                     document.getElementById('colab-cargo').value = colab.cargo || '';
-                    document.getElementById('colab-data-nasc').value = colab.data_nascimento || '';
+                    // Usar a função corrigida para formatar a data
+                    document.getElementById('colab-data-nasc').value = formatDateForInput(colab.data_nascimento);
                     document.getElementById('colab-ativo').checked = colab.ativo !== false;
                 }
             } else {
@@ -2324,14 +2373,14 @@
                 const month = parseInt(monthFilter);
                 filtered = filtered.filter(colab => {
                     if (!colab.data_nascimento) return false;
-                    const birthDate = new Date(colab.data_nascimento);
+                    const birthDate = parseDateWithoutTimezone(colab.data_nascimento);
                     return birthDate.getMonth() === month;
                 });
             }
 
             filtered.sort((a, b) => {
-                const dateA = new Date(a.data_nascimento);
-                const dateB = new Date(b.data_nascimento);
+                const dateA = parseDateWithoutTimezone(a.data_nascimento);
+                const dateB = parseDateWithoutTimezone(b.data_nascimento);
                 return dateA.getDate() - dateB.getDate();
             });
 
@@ -2347,15 +2396,15 @@
             }
 
             list.innerHTML = filtered.map(colab => {
-                const birthDate = new Date(colab.data_nascimento);
+                const birthDate = parseDateWithoutTimezone(colab.data_nascimento);
                 const today = new Date();
-                const age = today.getFullYear() - birthDate.getFullYear();
+                const age = calcularIdade(colab.data_nascimento);
                 const nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
                 if (nextBirthday < today) {
                     nextBirthday.setFullYear(today.getFullYear() + 1);
                 }
                 const daysUntil = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
-                const isToday = daysUntil === 0;
+                const isToday = datesAreEqual(colab.data_nascimento, today);
 
                 const dataFormatada = formatarDataBrasileira(colab.data_nascimento);
                 const mesNome = getMesPortugues(birthDate.getMonth());
