@@ -13,6 +13,7 @@
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Space+Mono:wght@400;700&display=swap"
         rel="stylesheet">
     <style>
+        /* (mantido todo o CSS original, sem alterações) */
         :root {
             --neon-blue: #00f3ff;
             --neon-orange: #ff4d00;
@@ -1897,7 +1898,6 @@
                 grid.innerHTML = monthBirthdays.slice(0, 6).map(colab => {
                     const birthDate = parseDateWithoutTimezone(colab.data_nascimento);
                     const today = new Date();
-                    const age = calcularIdade(colab.data_nascimento);
                     const isToday = datesAreEqual(colab.data_nascimento, today);
 
                     const dataFormatada = formatarDataBrasileira(colab.data_nascimento);
@@ -1927,13 +1927,11 @@
                         }
                             </div>
                             
+                            <!-- APENAS DATA DE NASCIMENTO (DIA/MÊS) - IDADE REMOVIDA -->
                             <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-800">
                                 <div class="text-sm">
                                     <div class="text-gray-500 text-xs">Data de Nascimento</div>
                                     <div class="text-white font-bold">${dataFormatada}</div>
-                                </div>
-                                <div class="age-bubble text-sm">
-                                    ${age} anos
                                 </div>
                             </div>
                             
